@@ -17,6 +17,18 @@ public class GeoPosition : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
+		//TODO: Figure out why on init is not called sometimes...
+		Map.OnInitialized += () => {
+			readCSVAndPlotMarkers();
+		};
+
+        Debug.Log("Start called...");
+
+       
+	}
+
+	void readCSVAndPlotMarkers()
+	{
 		GeoCoding coder = new GeoCoding ();
 
 		using ( CsvReader reader = new CsvReader( "Assets/Data/Nonprofits- Data Viz - Sheet1.csv" ) )
@@ -31,7 +43,7 @@ public class GeoPosition : MonoBehaviour {
 					string address =  values[2];
 					string type = values [1];
 					//If type is not mentioned get the default type
-				
+
 					if (type == null || type.Length < 2) {
 						type = DEFAULT_MARKER;
 					}
@@ -40,46 +52,16 @@ public class GeoPosition : MonoBehaviour {
 						//Debug.Log ("address - " + address);
 						Location location = coder.GetGeoLocationFromAddress (address);
 						if (location != null) {
-							//plotMarkers (location.lat, location.lng);
-							var llpos = new Vector2d(location.lat,location.lng);
-							Debug.Log ("2d vector - " + llpos);
-
-							// Vector3 pos = Conversions.GeoToWorldPosition(llpos, Map.CenterMercator, Map.WorldRelativeScale).ToVector3xz();
-							Vector3 pos = Conversions.GeoToWorldPosition(llpos, Map.CenterMercator, Map.WorldRelativeScale).ToVector3xz();
-							Debug.Log(pos);
-
-							var gg = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-							gg.transform.position = new Vector3((float)pos.x, 0, (float)pos.y);
+							plotMarkers (location.lat, location.lng, address);
 
 						}
 					}
 				}
 			}
 		}
-
-        Debug.Log("Start called...");
-
-        //TODO: Figure out why on init is not called...
-        
-		/*Map.OnInitialized += () =>
-        {
-        Debug.Log("Map initialized called...");
-            foreach (var item in Coordinates)
-            {
-                var latLonSplit = item.Split(',');
-                var llpos = new Vector2d(double.Parse(latLonSplit[0]), double.Parse(latLonSplit[1]));
-               // Vector3 pos = Conversions.GeoToWorldPosition(llpos, Map.CenterMercator, Map.WorldRelativeScale).ToVector3xz();
-				Vector3 pos = Conversions.GeoToWorldPosition(llpos, Map.CenterMercator, Map.WorldRelativeScale).ToVector3xz();
-				Debug.Log(pos);
-
-				var gg = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-               gg.transform.position = new Vector3((float)pos.x, 0, (float)pos.y);
-
-			}
-        };*/
 	}
 
-	void plotMarkers(double latitide, double longitude)
+	void plotMarkers(double latitide, double longitude, string address)
 	{
 		Debug.Log("Plotting markers in the position " + latitide+ ", "+ longitude);
 
@@ -89,7 +71,8 @@ public class GeoPosition : MonoBehaviour {
 		Debug.Log("unity position - "+ pos);
 
 		var gg = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-		gg.transform.position = new Vector3((float)pos.x, 0, (float)pos.y);
+		gg.name = address;
+		gg.transform.position = new Vector3((float)pos.x, 0, (float)pos.z);
 			
 	}
 }
