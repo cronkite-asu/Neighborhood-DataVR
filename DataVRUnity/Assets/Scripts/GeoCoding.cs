@@ -17,10 +17,13 @@ public class GeoCoding : MonoBehaviour {
 	// Location object contains the latitude and longitude information of the palce
 	public Location GetGeoLocationFromAddress(string address)
 	{
+		Location loc = null;
 		string url = baseUrl + address +key+ API_KEY;
 		string jsonResponse = GET (url);
 		RootObject result  = JsonUtility.FromJson<RootObject> (jsonResponse);
-		return result.results[0].geometry.location;
+		if(result.results.Count >0)
+			loc =result.results[0].geometry.location; 
+		return loc;
 	}
 
 
