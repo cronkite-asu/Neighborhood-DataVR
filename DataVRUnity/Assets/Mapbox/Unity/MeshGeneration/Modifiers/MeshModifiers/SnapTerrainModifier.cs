@@ -20,6 +20,7 @@
 				for (int i = 0; i < md.Vertices.Count; i++)
 				{
 					var h = tile.QueryHeightData((float)((md.Vertices[i].x + scaledX / 2) / scaledX), (float)((md.Vertices[i].z + scaledY / 2) / scaledY));
+					Debug.Log ("tile name" + tile.name + "  Height =" + h);
 					md.Vertices[i] += new Vector3(0, h, 0);
 				}
 			}

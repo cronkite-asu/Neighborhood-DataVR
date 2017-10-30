@@ -5,25 +5,32 @@ using UnityEngine;
     using Mapbox.Unity.Utilities;
     using Mapbox.Unity.Map;
     using Mapbox.Utils;
+using Mapbox.Unity.MeshGeneration.Data;
+using Mapbox.Unity.MeshGeneration.Components;
+using UnityEngine.UI;
+using Mapbox.Unity.MeshGeneration.Modifiers;
 
 public class GeoPosition : MonoBehaviour {
-
-	
     public AbstractMap Map;
     public List<string> Coordinates;
+	public GameObject flagObj;
 
 	private static string DEFAULT_MARKER = "default";
 
 	// Use this for initialization
-	void Start () {
+	void Start () 	{
 	
 		//TODO: Figure out why on init is not called sometimes...
 		Map.OnInitialized += () => {
+			Debug.Log("Map OnInitialized called .....");
 			readCSVAndPlotMarkers();
 		};
 
         Debug.Log("Start called...");
-
+		//UnityTile tile = Map.GetComponent<UnityTile> ();
+		//float height  = tile.QueryHeightData (0, 1);
+		//Debug.Log ("height = " + height);
+		//readCSVAndPlotMarkers();
        
 	}
 
@@ -49,9 +56,10 @@ public class GeoPosition : MonoBehaviour {
 					}
 					if (address != null && address.Length > 2) {
 						//Plot the markers
-						//Debug.Log ("address - " + address);
+
 						Location location = coder.GetGeoLocationFromAddress (address);
 						if (location != null) {
+							Debug.Log ("address - " + address);
 							plotMarkers (location.lat, location.lng, address);
 
 						}
@@ -67,12 +75,32 @@ public class GeoPosition : MonoBehaviour {
 
 		var llpos = new Vector2d(latitide, longitude);
 		// Vector3 pos = Conversions.GeoToWorldPosition(llpos, Map.CenterMercator, Map.WorldRelativeScale).ToVector3xz();
+		Conversions.GeoToWorldPosition(llpos, Map.CenterMercator, Map.WorldRelativeScale);
+
 		Vector3 pos = Conversions.GeoToWorldPosition(llpos, Map.CenterMercator, Map.WorldRelativeScale).ToVector3xz();
 		Debug.Log("unity position - "+ pos);
 
-		var gg = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-		gg.name = address;
-		gg.transform.position = new Vector3((float)pos.x, 0, (float)pos.z);
-			
+		//var gg = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+		//var gg = GameObject.Instantiate (flagObj);
+		//gg.name = address;
+		//gg.transform.position = new Vector3((float)pos.x, 0, (float)pos.z);
+		castRayToGround(new Vector3((float)pos.x, 0, (float)pos.z));
+	}
+
+	void castRayToGround(Vector3 position)
+	{
+		RaycastHit hit;
+		float distance = 100f;
+		position.y = 50;
+		Vector3 targetLocation;
+
+
+		if (Physics.Raycast(position, Vector3.down, out hit, distance)) {
+			targetLocation = hit.point;
+			//float height = targetLocation.y;
+		
+			Debug.DrawLine (position, hit.point, Color.red, 100);
+			Debug.Log ("Ray cast hit position " + hit.point);
+		}
 	}
 }
