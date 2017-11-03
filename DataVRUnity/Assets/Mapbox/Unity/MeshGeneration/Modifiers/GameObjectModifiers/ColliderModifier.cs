@@ -12,6 +12,7 @@ namespace Mapbox.Unity.MeshGeneration.Modifiers
 
 		public override void Run(FeatureBehaviour fb, UnityTile tile)
         {
+			Debug.Log ("Collider modifier called...");
             switch (_colliderType)
             {
                 case ColliderType.BoxCollider:

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657934, g: 0.4964136, b: 0.5748189, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -77,15 +77,17 @@ LightmapSettings:
     m_PVRDirectSampleCount: 32
     m_PVRSampleCount: 500
     m_PVRBounces: 2
-    m_PVRFiltering: 0
+    m_PVRFilterTypeDirect: 0
+    m_PVRFilterTypeIndirect: 0
+    m_PVRFilterTypeAO: 0
     m_PVRFilteringMode: 1
     m_PVRCulling: 1
     m_PVRFilteringGaussRadiusDirect: 1
     m_PVRFilteringGaussRadiusIndirect: 5
     m_PVRFilteringGaussRadiusAO: 2
-    m_PVRFilteringAtrousColorSigma: 1
-    m_PVRFilteringAtrousNormalSigma: 1
-    m_PVRFilteringAtrousPositionSigma: 1
+    m_PVRFilteringAtrousPositionSigmaDirect: 0.5
+    m_PVRFilteringAtrousPositionSigmaIndirect: 2
+    m_PVRFilteringAtrousPositionSigmaAO: 1
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -117,7 +119,7 @@ GameObject:
   m_Component:
   - component: {fileID: 590292603}
   - component: {fileID: 590292602}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -136,9 +138,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Map: {fileID: 812483990}
-  Coordinates:
-  - 33.448156290095355,-112.07124888896942
-  - 33.452300957232836,-112.06995606422424
+  defaultMarker: {fileID: 1000010288152912, guid: 44828d4325e8b544ca6ffec352cfe165,
+    type: 2}
 --- !u!4 &590292603
 Transform:
   m_ObjectHideFlags: 0
@@ -162,7 +163,7 @@ GameObject:
   - component: {fileID: 812483992}
   - component: {fileID: 812483990}
   - component: {fileID: 812483993}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Map
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,7 +186,7 @@ MonoBehaviour:
   _zoom: 16
   _root: {fileID: 812483992}
   _tileProvider: {fileID: 812483993}
-  _mapVisualizer: {fileID: 11400000, guid: cd4289970163d4a4780274ac22a6aee7, type: 2}
+  _mapVisualizer: {fileID: 11400000, guid: aa444a3e535964007acda486e77948e1, type: 2}
   _unityTileSize: 100
   _snapMapHeightToZero: 1
 --- !u!4 &812483992
