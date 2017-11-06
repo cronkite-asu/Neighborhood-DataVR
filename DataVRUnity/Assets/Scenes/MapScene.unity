@@ -138,7 +138,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Map: {fileID: 812483990}
-  defaultMarker: {fileID: 1000010288152912, guid: 44828d4325e8b544ca6ffec352cfe165,
+  markerTags: []
+  defaultMarker: {fileID: 1000014124467848, guid: df8b2e05e6bc70e4eb740280ce078f7f,
     type: 2}
 --- !u!4 &590292603
 Transform:

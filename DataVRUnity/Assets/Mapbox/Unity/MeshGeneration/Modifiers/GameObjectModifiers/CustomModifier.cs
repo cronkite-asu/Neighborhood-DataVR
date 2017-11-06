@@ -15,6 +15,7 @@
 		{
 
 				markerScript = GeoPosition.Instance;
+				Debug.Log ("Name in custom modifier =  " + markerScript.name);
 
 				Debug.Log ("Custom Modified called ...");
 				markerScript.performAction ();

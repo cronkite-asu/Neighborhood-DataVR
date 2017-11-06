@@ -34,14 +34,16 @@
 	
 		}
 		public AbstractMap Map;
-		private Dictionary<string, GameObject> markerTagging = new Dictionary<string, GameObject> ();
+		private static Dictionary<string, GameObject> markerTagging = new Dictionary<string, GameObject> ();
 		public TypeMapping[] markerTags;
 		public GameObject defaultMarker;
 		private static int counter = 1;
+		private static GameObject statDefaultMarker;
 
 		private static double maxBuildingHeight = 0;
 		private static string DEFAULT_MARKER = "default";
 		private static List<MarkerObject> markerList;
+		public string name;
 
 
 
@@ -49,6 +51,8 @@
 		void Start ()
 		{
 			Debug.Log ("Start called...");
+			name = "datavr project";
+			statDefaultMarker = defaultMarker;
 			readDataFile ();
 
 			//TODO: Figure out why on init is not called sometimes...
@@ -189,7 +193,15 @@
 
 		void plotMarker (MarkerObject marker)
 		{
-			GameObject gameObject = defaultMarker;
+			GameObject gameObject = statDefaultMarker ;
+
+			if (defaultMarker == null) {
+				Debug.Log ("Default marker is null");
+			}
+
+			if (markerTagging.Count == 0) {
+				Debug.Log ("marker tagging count is zero");
+			}
 
 			if (markerTagging.ContainsKey (marker.type)) {
 				gameObject = markerTagging [marker.type];
@@ -198,12 +210,12 @@
 			Vector3 gameObjectPosition = new Vector3 ((float)marker.x, (float)maxBuildingHeight + 1, (float)marker.z);
 
 
-			var gg = GameObject.CreatePrimitive (PrimitiveType.Sphere);
+			/*var gg = GameObject.CreatePrimitive (PrimitiveType.Sphere);
 			gg.name = marker.address;
 			gg.transform.position = gameObjectPosition;
-		
-		
-			//Instantiate(gameObject, gameObjectPosition, Quaternion.identity);
+		*/
+
+			Instantiate(gameObject, gameObjectPosition, Quaternion.identity);
 		}
 
 		//Get the height of the given point by casting ray downwards
@@ -220,7 +232,7 @@
 
 			if (Physics.Raycast (position, Vector3.down, out hit, distance)) {
 				targetLocation = hit.point;
-				Debug.DrawLine (position, hit.point, Color.red, 100);
+				//Debug.DrawLine (position, hit.point, Color.red, 100);
 				Debug.Log ("Ray cast hit position " + hit.point);
 				height = hit.point.y;
 			}
