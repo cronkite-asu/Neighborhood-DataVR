@@ -208,7 +208,8 @@
 			gg.transform.position = gameObjectPosition;
 		*/
 
-			Instantiate(gameObject, gameObjectPosition, Quaternion.identity);
+			GameObject placedMarker = Instantiate(gameObject, gameObjectPosition, Quaternion.identity);
+			placedMarker.name = marker.title;
 		}
 
 		//Get the height of the given point by casting ray downwards
