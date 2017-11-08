@@ -136,7 +136,7 @@
 						}
 						if (address != null && address.Length > 2) {
 						
-							MarkerObject marker = new MarkerObject (address, type, address);
+							MarkerObject marker = new MarkerObject (address, address, type);
 							markerList.Add (marker);
 						}
 					}
@@ -195,15 +195,8 @@
 		{
 			GameObject gameObject = statDefaultMarker ;
 
-			if (defaultMarker == null) {
-				Debug.Log ("Default marker is null");
-			}
-
-			if (markerTagging.Count == 0) {
-				Debug.Log ("marker tagging count is zero");
-			}
-
 			if (markerTagging.ContainsKey (marker.type)) {
+				//Debug.Log ("Marker tag contains the key = " + marker.type);
 				gameObject = markerTagging [marker.type];
 			}
 
