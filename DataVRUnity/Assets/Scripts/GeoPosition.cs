@@ -9,6 +9,7 @@
 	using Mapbox.Utils;
 	using Mapbox.Unity.MeshGeneration.Modifiers;
 
+
 	[System.Serializable]
 	public class GeoPosition : MonoBehaviour
 	{
@@ -44,6 +45,7 @@
 		private static string DEFAULT_MARKER = "default";
 		private static List<MarkerObject> markerList;
 		public string name;
+		public string Google_Maps_API_KEY;
 
 
 
@@ -116,7 +118,7 @@
 		{
 			Debug.Log ("Reading data from file...");
 
-			GeoCoding coder = new GeoCoding ();
+			GeoCoding coder = new GeoCoding (Google_Maps_API_KEY);
 			markerList = new List<MarkerObject> ();
 
 			using (CsvReader reader = new CsvReader ("Assets/Data/Nonprofits- Data Viz - Sheet1.csv")) {
@@ -147,7 +149,7 @@
 		//Method which fetches populates the lat long fields of the list of marker objects
 		void fetchGeoLocation (List<MarkerObject> markerList)
 		{
-			GeoCoding coder = new GeoCoding ();
+			GeoCoding coder = new GeoCoding (Google_Maps_API_KEY);
 			Debug.Log ("No of marker in list while fetchint geo locaiton = " +(markerList.Count));
 			foreach (MarkerObject marker in  markerList) {
 
@@ -200,7 +202,7 @@
 				gameObject = markerTagging [marker.type];
 			}
 
-			Vector3 gameObjectPosition = new Vector3 ((float)marker.x, (float)maxBuildingHeight + 1, (float)marker.z);
+			Vector3 gameObjectPosition = new Vector3 ((float)marker.x, (float)maxBuildingHeight+1, (float)marker.z);
 
 
 			/*var gg = GameObject.CreatePrimitive (PrimitiveType.Sphere);
@@ -210,6 +212,7 @@
 
 			GameObject placedMarker = Instantiate(gameObject, gameObjectPosition, Quaternion.identity);
 			placedMarker.name = marker.title;
+
 		}
 
 		//Get the height of the given point by casting ray downwards
