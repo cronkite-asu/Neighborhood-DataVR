@@ -212,7 +212,7 @@
 
 			GameObject placedMarker = Instantiate(gameObject, gameObjectPosition, Quaternion.identity);
 			placedMarker.name = marker.title;
-
+			placedMarker.AddComponent<MarkerEventTrigger> ();
 		}
 
 		//Get the height of the given point by casting ray downwards
