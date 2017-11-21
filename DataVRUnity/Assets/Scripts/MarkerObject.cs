@@ -6,9 +6,9 @@ using UnityEngine;
 
 [System.Serializable]
 public class MarkerObject {
-	public double x;
-	public double y;
-	public double z;
+	public float x;
+	public float y;
+	public float z;
 
 	public string type;
 

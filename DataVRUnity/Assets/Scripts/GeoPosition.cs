@@ -40,6 +40,7 @@
 		public GameObject defaultMarker;
 		private static int counter = 1;
 		private static GameObject statDefaultMarker;
+	
 
 		private static double maxBuildingHeight = 0;
 		private static string DEFAULT_MARKER = "default";
@@ -47,6 +48,8 @@
 		public string name;
 		public string Google_Maps_API_KEY;
 
+		//TODO: Move the configurations to a different script file and make this file clean
+		public static MarkerObject selectedObject;
 
 
 		// Use this for initialization
@@ -61,8 +64,10 @@
 			Map.OnInitialized += () => {
 				fetchGeoLocation (markerList);
 			};
-			foreach (TypeMapping markerTag in markerTags) {
-				markerTagging.Add (markerTag.name, markerTag.prefab);
+			if (markerTagging.Count == 0) {
+				foreach (TypeMapping markerTag in markerTags) {
+					markerTagging.Add (markerTag.name, markerTag.prefab);
+				}
 			}
 		}
 
@@ -176,7 +181,7 @@
 			foreach (MarkerObject marker in markerList) {
 		
 				double height = getHeightAtTile (new Vector3 ((float)marker.x, 0f, (float)marker.z));
-				marker.y = height;
+				marker.y = (float)height;
 				if (height > maxBuildingHeight) {
 					maxBuildingHeight = height;
 				}
@@ -212,7 +217,8 @@
 
 			GameObject placedMarker = Instantiate(gameObject, gameObjectPosition, Quaternion.identity);
 			placedMarker.name = marker.title;
-			placedMarker.AddComponent<MarkerEventTrigger> ();
+			MarkerEventTrigger trigger = placedMarker.AddComponent<MarkerEventTrigger> ();
+			trigger.setMarkerObj (marker);
 		}
 
 		//Get the height of the given point by casting ray downwards

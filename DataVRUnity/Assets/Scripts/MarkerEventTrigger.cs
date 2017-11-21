@@ -8,6 +8,13 @@
 
 	public class MarkerEventTrigger : EventTrigger
 	{
+		private MarkerObject markerObj;
+
+		public void setMarkerObj(MarkerObject markerObj)
+		{
+			this.markerObj = markerObj;
+		}
+
 		public override void OnBeginDrag (PointerEventData data)
 		{
 			Debug.Log ("OnBeginDrag called.");
@@ -101,6 +108,7 @@
 		//TODO: find a way to cache the loaded scene coordinate from the rectile pointer
 			Debug.Log("Showing the details of the maker : " +this.name);
 			SceneManager.LoadScene("MarkerInfo");
+			GeoPosition.selectedObject = this.markerObj;
 		}
 
 	}
