@@ -8,6 +8,7 @@
 	using Mapbox.Unity.Map;
 	using Mapbox.Utils;
 	using Mapbox.Unity.MeshGeneration.Modifiers;
+	using UnityEngine.SceneManagement;
 
 
 	[System.Serializable]
@@ -69,6 +70,14 @@
 					markerTagging.Add (markerTag.name, markerTag.prefab);
 				}
 			}
+		}
+			
+
+		void OnLevelWasLoaded(int level)
+		{
+			Debug.Log ("On Level was loaded ...");
+			// Plot the markers when the scene is loaded again.
+			plotAllMarkers ();
 		}
 
 		public void performOnce()

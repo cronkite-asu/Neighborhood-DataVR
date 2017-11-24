@@ -18,18 +18,24 @@
 		private void updatePositionCalledFromInfoScene ()
 		{
 			if (GeoPosition.selectedObject != null) {
+				Debug.Log ("Adjusting camera angle based on previous selection");
 				//If the scene is called from the Marker Info scene
 				//then adjust the camera to the position where the scene is left off
 				MarkerObject markerObj = GeoPosition.selectedObject;
-				Vector2 initVec = new Vector2(0, 0);
+				Vector2 initVec = new Vector2(1, 1);
 				Vector2 posVec = new Vector2 (markerObj.x, markerObj.z);
 				float angle = Vector2.Angle (initVec, posVec);
 
+				Debug.Log ("Camera angle of previous object is " + angle);
 				Quaternion rot=new Quaternion();
 				rot.eulerAngles = new Vector3(0, angle, 0);
 
 				GameObject mainCamera= GameObject.Find("Main Camera");
-				mainCamera.transform.rotation = rot;
+				//mainCamera.transform.rotation = rot;
+			
+
+				Quaternion target = Quaternion.Euler(markerObj.x, 0, markerObj.z);
+				mainCamera.transform.rotation = Quaternion.Lerp (mainCamera.transform.rotation, target, Time.deltaTime * 100.0F);
 			}
 		}
 	}
