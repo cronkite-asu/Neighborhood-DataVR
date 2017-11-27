@@ -30,12 +30,15 @@
 				Quaternion rot=new Quaternion();
 				rot.eulerAngles = new Vector3(0, angle, 0);
 
-				GameObject mainCamera= GameObject.Find("Main Camera");
 				//mainCamera.transform.rotation = rot;
 			
+				Vector3 selectedObjVec = new Vector3 (markerObj.x, markerObj.y, markerObj.z);
 
-				Quaternion target = Quaternion.Euler(markerObj.x, 0, markerObj.z);
-				mainCamera.transform.rotation = Quaternion.Lerp (mainCamera.transform.rotation, target, Time.deltaTime * 100.0F);
+
+				//Quaternion target = Quaternion.Euler(markerObj.x, 0, markerObj.z);
+				//transform.rotation = Quaternion.Lerp (transform.rotation, target, Time.deltaTime * 100.0F);
+
+				transform.LookAt (selectedObjVec);
 			}
 		}
 	}
