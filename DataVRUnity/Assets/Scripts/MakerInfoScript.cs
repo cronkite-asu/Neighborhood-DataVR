@@ -17,7 +17,7 @@
 			MarkerObject marker = GeoPosition.selectedObject;
 			GameObject markerText = GameObject.Find ("MarkerInfoText");
 			Text text = markerText.GetComponent<Text> ();
-			text.text = text.text + marker.address;	
+			//text.text = text.text + marker.address;	
 		}
 	
 		// Update is called once per frame

@@ -9,24 +9,29 @@
 	using Mapbox.Utils;
 	using Mapbox.Unity.MeshGeneration.Modifiers;
 	using UnityEngine.SceneManagement;
+	using System.IO;
+	using System.Collections.Generic;
+	using System;
 
 
 	[System.Serializable]
 	public class GeoPosition : MonoBehaviour
 	{
 		[System.Serializable]
-		public struct TypeMapping {
+		public struct TypeMapping
+		{
 			public string name;
 			public GameObject prefab;
 		}
 
 		private static GeoPosition instance;
 
-		private GeoPosition(){}
-
-		public static GeoPosition Instance
+		private GeoPosition ()
 		{
-			get{
+		}
+
+		public static GeoPosition Instance {
+			get {
 				if (instance == null) {
 					instance = new GeoPosition ();
 		
@@ -35,6 +40,7 @@
 			}
 	
 		}
+
 		public AbstractMap Map;
 		private static Dictionary<string, GameObject> markerTagging = new Dictionary<string, GameObject> ();
 		public TypeMapping[] markerTags;
@@ -53,34 +59,115 @@
 		public static MarkerObject selectedObject;
 
 
+
+		//Read data file from android, ios, mac different ways
+
+
+		private List<List<string>> readFileNonMobile()
+		{
+			string filename = "Nonprofits- Data Viz - Sheet1 copy.csv";
+			string filePath = getFileName (filename);
+			string readContents;
+			using (StreamReader streamReader = new StreamReader(filePath, System.Text.Encoding.UTF8))
+			{
+				readContents = streamReader.ReadToEnd();
+			}
+			char[] splitChars = { '\n' };
+			string[] array = readContents.Split (splitChars);
+
+			List<List<string>> csvList = new List<List<string>> ();
+
+			foreach (string sline in array) {
+				List<string> colList = CsvReader.csvColumnSplitProcessor (sline);
+				csvList.Add (colList);
+			}			
+
+			//Debug.Log ("DATAVR: File contents :\n" + result);
+			return csvList;
+			//return readContents;
+		}
+
+		private List<List<string>> readFile ()
+		{
+			//String file = "Assets/Data/Nonprofits- Data Viz - Sheet1 copy.csv";
+			//String androidFilePath = Application.streamingAssetsPath + file;
+			string filename = "Nonprofits- Data Viz - Sheet1 copy.csv";
+
+			string androidFilePath = getFileName (filename);
+			//string androidFilePath = System.IO.Path.Combine (Application.streamingAssetsPath, filename);
+
+			Debug.Log (androidFilePath);
+			WWW reader = new WWW (androidFilePath);
+			while (!reader.isDone) {
+			}
+
+			Debug.Log ("DATAVR: file read ..\n");
+
+			string result = System.Text.Encoding.UTF8.GetString (reader.bytes);
+		
+			char[] splitChars = { '\n' };
+			string[] array = result.Split (splitChars);
+
+			List<List<string>> csvList = new List<List<string>> ();
+
+			foreach (string sline in array) {
+				List<string> colList = CsvReader.csvColumnSplitProcessor (sline);
+				csvList.Add (colList);
+			}			
+
+			Debug.Log ("DATAVR: File contents :\n" + result);
+			return csvList;
+		}
+
+
+		private List<List<string>> getData()
+		{
+			switch (Application.platform) {
+			case RuntimePlatform.OSXEditor:
+			case RuntimePlatform.OSXPlayer:
+				return readFileNonMobile ();
+			case RuntimePlatform.Android:
+			case RuntimePlatform.IPhonePlayer:
+				return readFile ();
+			}
+			return null;
+		}
+
+
 		// Use this for initialization
 		void Start ()
 		{
-			Debug.Log ("Start called...");
+			Debug.Log ("DATAVR: Start called...");
 			name = "datavr project";
 			statDefaultMarker = defaultMarker;
-			readDataFile ();
+			try {
+				List<List<string>> csvList = getData();
+				populateMarkerList (csvList);
 
-			//TODO: Figure out why on init is not called sometimes...
-			Map.OnInitialized += () => {
-				fetchGeoLocation (markerList);
-			};
-			if (markerTagging.Count == 0) {
-				foreach (TypeMapping markerTag in markerTags) {
-					markerTagging.Add (markerTag.name, markerTag.prefab);
+				//TODO: Figure out why on init is not called sometimes...
+				Map.OnInitialized += () => {
+					fetchGeoLocation (markerList);
+				};
+				if (markerTagging.Count == 0) {
+					foreach (TypeMapping markerTag in markerTags) {
+						markerTagging.Add (markerTag.name, markerTag.prefab);
+					}
 				}
+			} catch (Exception ex) {
+				Debug.Log ("DATAVR: DATAVREXCEPTION"+ ex.ToString ());
+				Debug.LogException (ex, this);
 			}
 		}
-			
 
-		void OnLevelWasLoaded(int level)
+
+		void OnLevelWasLoaded (int level)
 		{
 			Debug.Log ("On Level was loaded ...");
 			// Plot the markers when the scene is loaded again.
 			plotAllMarkers ();
 		}
 
-		public void performOnce()
+		public void performOnce ()
 		{
 			if (counter == 0) {
 				counter = counter + 1;
@@ -94,11 +181,11 @@
 			}
 		}
 
-		public void performAction()
+		public void performAction ()
 		{
 			Debug.Log ("Geoposition - Perform action()");
 			counter += 1;
-			if (counter>8) {
+			if (counter > 8) {
 				if (canRun ()) {
 					fetchHeightofAllMarkerLocations ();
 				} else {
@@ -114,10 +201,10 @@
 
 			
 		//Return whether the run method can be called or not
-		public bool canRun ()	
+		public bool canRun ()
 		{
 			//Run untill all the building layers are called.
-			return !(maxBuildingHeight>0);
+			return !(maxBuildingHeight > 0);
 		}
 
 		private void plotAllMarkers ()
@@ -127,15 +214,56 @@
 			}
 		}
 
+		private string getFileName(string fileName)
+		{
+			string filename = fileName;
+			switch (Application.platform) {
+
+			case RuntimePlatform.Android:
+			case RuntimePlatform.IPhonePlayer:
+				
+				filename = System.IO.Path.Combine (Application.streamingAssetsPath, fileName);
+					break;
+			default:
+				filename = "Assets/StreamingAssets/" + fileName;
+				break;
+			}
+			return filename;
+		}
+
+		void populateMarkerList (List<List<string>> csvList)
+		{
+			markerList = new List<MarkerObject> ();
+
+			foreach (List<string> colList in csvList) {
+				string address = colList [2];
+				string type = colList [1];
+				string title = colList [0];
+
+				//If type is not mentioned get the default type
+				if (type == null || type.Length < 2) {
+					type = DEFAULT_MARKER;
+				}
+				if (address != null && address.Length > 2) {
+
+					MarkerObject marker = new MarkerObject (address, address, type);
+					markerList.Add (marker);
+				}
+			}
+		}
+
 
 		void readDataFile ()
 		{
 			Debug.Log ("Reading data from file...");
 
+			string filename = "Nonprofits- Data Viz - Sheet1 copy.csv";
+			string androidFilePath = System.IO.Path.Combine (Application.streamingAssetsPath, filename);
+
 			GeoCoding coder = new GeoCoding (Google_Maps_API_KEY);
 			markerList = new List<MarkerObject> ();
 
-			using (CsvReader reader = new CsvReader ("Assets/Data/Nonprofits- Data Viz - Sheet1.csv")) {
+			using (CsvReader reader = new CsvReader (androidFilePath)) {
 				foreach (string[] values in reader.RowEnumerator) {
 					//Debug.Log(string.Format( "Row {0} has {1} values.", reader.RowIndex, values.Length ));
 					//foreach (string val in  values)
@@ -164,7 +292,7 @@
 		void fetchGeoLocation (List<MarkerObject> markerList)
 		{
 			GeoCoding coder = new GeoCoding (Google_Maps_API_KEY);
-			Debug.Log ("No of marker in list while fetchint geo locaiton = " +(markerList.Count));
+			Debug.Log ("No of marker in list while fetchint geo locaiton = " + (markerList.Count));
 			foreach (MarkerObject marker in  markerList) {
 
 				Location location = coder.GetGeoLocationFromAddress (marker.address);
@@ -195,7 +323,7 @@
 					maxBuildingHeight = height;
 				}
 			}
-			Debug.Log("Maximum height so far  = " + maxBuildingHeight);
+			Debug.Log ("Maximum height so far  = " + maxBuildingHeight);
 		}
 
 		private Vector3 fetchUnityWorldCoordinatesFromLatLong (double latitide, double longitude)
@@ -209,14 +337,14 @@
 
 		void plotMarker (MarkerObject marker)
 		{
-			GameObject gameObject = statDefaultMarker ;
+			GameObject gameObject = statDefaultMarker;
 
 			if (markerTagging.ContainsKey (marker.type)) {
 				//Debug.Log ("Marker tag contains the key = " + marker.type);
 				gameObject = markerTagging [marker.type];
 			}
 
-			Vector3 gameObjectPosition = new Vector3 ((float)marker.x, (float)maxBuildingHeight+1, (float)marker.z);
+			Vector3 gameObjectPosition = new Vector3 ((float)marker.x, (float)maxBuildingHeight + 1, (float)marker.z);
 
 
 			/*var gg = GameObject.CreatePrimitive (PrimitiveType.Sphere);
@@ -224,7 +352,7 @@
 			gg.transform.position = gameObjectPosition;
 		*/
 
-			GameObject placedMarker = Instantiate(gameObject, gameObjectPosition, Quaternion.identity);
+			GameObject placedMarker = Instantiate (gameObject, gameObjectPosition, Quaternion.identity);
 			placedMarker.name = marker.title;
 			MarkerEventTrigger trigger = placedMarker.AddComponent<MarkerEventTrigger> ();
 			trigger.setMarkerObj (marker);

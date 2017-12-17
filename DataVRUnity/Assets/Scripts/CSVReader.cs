@@ -1,15 +1,29 @@
 ﻿using System.IO;
 using System.Text.RegularExpressions;
+using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public sealed class CsvReader : System.IDisposable
 {
-	public CsvReader( string fileName ) : this( new FileStream( fileName, FileMode.Open, FileAccess.Read ) )
+	public CsvReader( string fileName ) : this( new FileStream(fileName, FileMode.Open, FileAccess.Read ) )
 	{
 	}
 
 	public CsvReader( Stream stream )
 	{
 		__reader = new StreamReader( stream );
+	}
+
+	public static List<string> csvColumnSplitProcessor(string line)
+	{
+		string[] values = rexCsvSplitter.Split( line );
+		List<string> colValues = new List<string> ();
+		
+		for (int i = 0; i < values.Length; i++) {
+			colValues.Add (Csv.Unescape (values [i]));
+		}
+		return colValues;
 	}
 
 	public System.Collections.IEnumerable RowEnumerator
