@@ -16,15 +16,13 @@
 		{
 			try {
 				markerScript = GeoPosition.Instance;
-				Debug.Log ("Name in custom modifier =  " + markerScript.name);
-
+				Debug.Log ("DATAVR :Name in custom modifier =  " + markerScript.name);
 				Debug.Log ("Custom Modified called ...");
 				markerScript.performAction ();
-				Debug.Log ("custom modifier finished");
+				Debug.Log ("DATAVR :custom modifier finished");
 			} catch (Exception ex) {
 				Debug.Log ("DATAVR : Exception in custom marker\n");
 				Debug.LogException (ex);
-			
 			}
 	
 		}

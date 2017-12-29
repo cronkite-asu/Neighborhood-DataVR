@@ -183,20 +183,21 @@
 
 		public void performAction ()
 		{
-			Debug.Log ("Geoposition - Perform action()");
 			counter += 1;
+			Debug.Log ("DATAVR :Geoposition - Perform action() - counter value "+ counter);
 			if (counter > 8) {
 				if (canRun ()) {
 					fetchHeightofAllMarkerLocations ();
 				} else {
 					//Plot the markers
-					//plotAllMarkers ();
+					plotAllMarkers ();
 				}
 			} 
 			if (counter == 9) {
+				fetchHeightofAllMarkerLocations ();
 				//Plot the markers
 				plotAllMarkers ();
-			}
+			} 	
 		}
 
 			
@@ -209,6 +210,7 @@
 
 		private void plotAllMarkers ()
 		{
+			Debug.Log ("DATAVR : Plot all Markers");
 			foreach (MarkerObject marker in markerList) {
 				plotMarker (marker);
 			}
@@ -233,12 +235,16 @@
 
 		void populateMarkerList (List<List<string>> csvList)
 		{
+			Debug.Log ("DATAVR : populate Marker List called...");
 			markerList = new List<MarkerObject> ();
 
 			foreach (List<string> colList in csvList) {
 				string address = colList [2];
 				string type = colList [1];
 				string title = colList [0];
+				string telephone = colList [3];
+				string url = colList [4];
+
 
 				//If type is not mentioned get the default type
 				if (type == null || type.Length < 2) {
@@ -246,10 +252,11 @@
 				}
 				if (address != null && address.Length > 2) {
 
-					MarkerObject marker = new MarkerObject (address, address, type);
+					MarkerObject marker = new MarkerObject (address, title, type, telephone ,url);
 					markerList.Add (marker);
 				}
 			}
+			Debug.Log ("DATAVR: Populate marker list completed...");
 		}
 
 
@@ -273,6 +280,8 @@
 						string address = values [2];
 						string type = values [1];
 						string title = values [0];
+						string telephone = values [3];
+						string url = values [4];
 
 						//If type is not mentioned get the default type
 						if (type == null || type.Length < 2) {
@@ -280,7 +289,7 @@
 						}
 						if (address != null && address.Length > 2) {
 						
-							MarkerObject marker = new MarkerObject (address, address, type);
+							MarkerObject marker = new MarkerObject (address, title, type, telephone, url);
 							markerList.Add (marker);
 						}
 					}
@@ -380,5 +389,4 @@
 			return height;
 		}
 	}
-		
 }
