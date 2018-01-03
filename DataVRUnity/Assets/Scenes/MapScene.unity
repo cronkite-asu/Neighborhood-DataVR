@@ -339,6 +339,30 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 224617829090643974, guid: 44e65992bfbea4a189d32212b70c5f99,
+        type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -115.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 224617829090643974, guid: 44e65992bfbea4a189d32212b70c5f99,
+        type: 2}
+      propertyPath: m_AnchoredPosition.y
+      value: -179
+      objectReference: {fileID: 0}
+    - target: {fileID: 114109327981690876, guid: 44e65992bfbea4a189d32212b70c5f99,
+        type: 2}
+      propertyPath: m_Text
+      value: "Address: \nType:\nOther information : \nContact: "
+      objectReference: {fileID: 0}
+    - target: {fileID: 114109327981690876, guid: 44e65992bfbea4a189d32212b70c5f99,
+        type: 2}
+      propertyPath: m_FontData.m_Alignment
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1485007560972084, guid: 44e65992bfbea4a189d32212b70c5f99, type: 2}
+      propertyPath: m_Name
+      value: MarkerInfoDetails
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 44e65992bfbea4a189d32212b70c5f99, type: 2}
   m_IsPrefabParent: 0
@@ -719,16 +743,16 @@ RectTransform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 869306519}
-  m_LocalRotation: {x: -0, y: -0.009102826, z: -0, w: -0.99995863}
-  m_LocalPosition: {x: 417.444, y: 249.6899, z: -433.86615}
+  m_LocalRotation: {x: 0.0021962374, y: -0.00015526357, z: 0.010337568, w: -0.99994415}
+  m_LocalPosition: {x: -5, y: 41, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 659327623}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -0.25100002, y: 0.020000001, z: -1.1850001}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 417.444, y: 249.6899}
+  m_AnchoredPosition: {x: -5, y: 41}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &869306521
@@ -753,17 +777,17 @@ MonoBehaviour:
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 14
-    m_FontStyle: 0
+    m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 10
     m_MaxSize: 40
-    m_Alignment: 0
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: Title
 --- !u!222 &869306522
 CanvasRenderer:
   m_ObjectHideFlags: 0

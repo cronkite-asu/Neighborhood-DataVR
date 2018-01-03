@@ -76,7 +76,7 @@
 		{
 			//Set the text with proper information
 			MarkerObject marker = GeoPosition.selectedObject;
-			GameObject markerText = GameObject.Find ("MarkerInfoText");
+			GameObject markerText = GameObject.Find ("MarkerInfoDetails");
 			Text text = markerText.GetComponent<Text> ();
 			//text.text = text.text + marker.address;	
 		}
