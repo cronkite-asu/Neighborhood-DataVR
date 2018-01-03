@@ -7,6 +7,11 @@
 	using edu.asu.cronkite.datavr;
 	using System;
 
+	/// <summary>
+	/// Custom Modifer : This class extends GameObjectModifier
+	/// This modifier is added to the merged stack modifier and run method will be run for executed for each
+	/// map tile rendered in the screen
+	/// </summary>
 	[CreateAssetMenu (menuName = "Mapbox/Modifiers/Custom Modifier")]
 	public class CustomModifier : GameObjectModifier
 	{
@@ -15,16 +20,13 @@
 		public override void Run (FeatureBehaviour fb, UnityTile tile)
 		{
 			try {
+				//Get the static singleton instance
 				markerScript = GeoPosition.Instance;
-				Debug.Log ("DATAVR :Name in custom modifier =  " + markerScript.name);
-				Debug.Log ("Custom Modified called ...");
+				//Perform any operation - here height of the buildings are measured.
 				markerScript.performAction ();
-				Debug.Log ("DATAVR :custom modifier finished");
 			} catch (Exception ex) {
-				Debug.Log ("DATAVR : Exception in custom marker\n");
 				Debug.LogException (ex);
 			}
-	
 		}
 	}
 }

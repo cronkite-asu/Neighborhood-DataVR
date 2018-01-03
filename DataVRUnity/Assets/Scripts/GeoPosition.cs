@@ -144,7 +144,6 @@
 				List<List<string>> csvList = getData();
 				populateMarkerList (csvList);
 
-				//TODO: Figure out why on init is not called sometimes...
 				Map.OnInitialized += () => {
 					fetchGeoLocation (markerList);
 				};
@@ -160,12 +159,12 @@
 		}
 
 
-		void OnLevelWasLoaded (int level)
+		/*void OnLevelWasLoaded (int level)
 		{
 			Debug.Log ("On Level was loaded ...");
 			// Plot the markers when the scene is loaded again.
 			plotAllMarkers ();
-		}
+		}*/
 
 		public void performOnce ()
 		{
@@ -349,17 +348,10 @@
 			GameObject gameObject = statDefaultMarker;
 
 			if (markerTagging.ContainsKey (marker.type)) {
-				//Debug.Log ("Marker tag contains the key = " + marker.type);
 				gameObject = markerTagging [marker.type];
 			}
 
 			Vector3 gameObjectPosition = new Vector3 ((float)marker.x, (float)maxBuildingHeight + 1, (float)marker.z);
-
-
-			/*var gg = GameObject.CreatePrimitive (PrimitiveType.Sphere);
-			gg.name = marker.address;
-			gg.transform.position = gameObjectPosition;
-		*/
 
 			GameObject placedMarker = Instantiate (gameObject, gameObjectPosition, Quaternion.identity);
 			placedMarker.name = marker.title;

@@ -7,8 +7,19 @@
 	using UnityEngine.EventSystems;
 	using UnityEngine.UI;
 
+	/// <summary>
+	/// Script for showing the details canvas when the click event happens.
+	/// </summary>
 	public class MakerInfoScript : EventTrigger
 	{
+		/// <summary>
+		/// Gets the vector from end.
+		/// Finds the distance of the point at specified units from the end vector in the direction of the line
+		/// </summary>
+		/// <returns>The vector from end.</returns>
+		/// <param name="start">Start.</param>
+		/// <param name="end">End.</param>
+		/// <param name="distFromEnd">Dist from end.</param>
 		private static Vector2 getVectorFromEnd(Vector2 start, Vector2 end, int distFromEnd)
 		{
 			Vector2 result;
@@ -17,9 +28,17 @@
 			float x = ((1 - ratio) * start.x) + (ratio * end.x);
 			float y = ((1 - ratio) * start.y) + (ratio * end.y);
 			result = new Vector2 (x, y);
-			return result;	
+			return result;
 		}
 
+		/// <summary>
+		/// Gets the vector from start.
+		/// Finds the point at a specified distance from the start point along the line.
+		/// </summary>
+		/// <returns>The vector from start.</returns>
+		/// <param name="start">Start.</param>
+		/// <param name="end">End.</param>
+		/// <param name="distFromStart">Dist from start.</param>
 		private static Vector2 getVectorFromStart(Vector2 start, Vector2 end, int distFromStart)
 		{
 			float vecDist = Vector2.Distance (start, end);
@@ -29,7 +48,10 @@
 			return new Vector2 (x, y);	
 		}
 
-
+		/// <summary>
+		/// Shows the marker details.
+		/// </summary>
+		/// <param name="selectedMarker">Selected marker.</param>
 		public static void showMarkerDetails(MarkerObject selectedMarker)
 		{
  			GameObject obj = GameObject.Find("MarkerDetails");
@@ -80,10 +102,11 @@
 			Text text = markerText.GetComponent<Text> ();
 			//text.text = text.text + marker.address;	
 		}
-			
-		public void backButtonClicked ()
+
+		//Method with action to perfom on closing the popup dialog
+		//Hide the pop up dialog shown for the displaying marker information.
+		public void closeButtonClicked ()
 		{
-			Debug.Log ("Back button clicked...");
 			GameObject infoCanvas = GameObject.Find ("InfoCanvas"); 
 			infoCanvas.SetActive (false);
 		}
