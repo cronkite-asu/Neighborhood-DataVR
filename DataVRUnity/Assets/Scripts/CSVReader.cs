@@ -4,6 +4,11 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// Csv reader
+/// 	Class for reading the data from the csv file and escaping the rows with special characters
+/// 	return the appropridate columns of the row by escaping characters
+/// </summary>
 public sealed class CsvReader : System.IDisposable
 {
 	public CsvReader( string fileName ) : this( new FileStream(fileName, FileMode.Open, FileAccess.Read ) )
@@ -15,6 +20,12 @@ public sealed class CsvReader : System.IDisposable
 		__reader = new StreamReader( stream );
 	}
 
+	/// <summary>
+	/// Csvs the column split processor.
+	/// 	Splits the line in csv format by escaping certain characters
+	/// </summary>
+	/// <returns>The column split processor.</returns>
+	/// <param name="line">Line.</param>
 	public static List<string> csvColumnSplitProcessor(string line)
 	{
 		string[] values = rexCsvSplitter.Split( line );

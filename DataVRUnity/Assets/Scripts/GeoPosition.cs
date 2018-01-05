@@ -38,7 +38,6 @@
 				}
 				return instance;
 			}
-	
 		}
 
 		public AbstractMap Map;
@@ -54,6 +53,7 @@
 		private static List<MarkerObject> markerList;
 		public string name;
 		public string Google_Maps_API_KEY;
+		public string FileName;
 
 		//TODO: Move the configurations to a different script file and make this file clean
 		public static MarkerObject selectedObject;
@@ -61,16 +61,12 @@
 
 
 		//Read data file from android, ios, mac different ways
-
-
-		private List<List<string>> readFileNonMobile()
+		private List<List<string>> readFileNonMobile ()
 		{
-			string filename = "Nonprofits- Data Viz - Sheet1 copy.csv";
-			string filePath = getFileName (filename);
+			string filePath = getFileName (FileName);
 			string readContents;
-			using (StreamReader streamReader = new StreamReader(filePath, System.Text.Encoding.UTF8))
-			{
-				readContents = streamReader.ReadToEnd();
+			using (StreamReader streamReader = new StreamReader (filePath, System.Text.Encoding.UTF8)) {
+				readContents = streamReader.ReadToEnd ();
 			}
 			char[] splitChars = { '\n' };
 			string[] array = readContents.Split (splitChars);
@@ -82,26 +78,17 @@
 				csvList.Add (colList);
 			}			
 
-			//Debug.Log ("DATAVR: File contents :\n" + result);
 			return csvList;
-			//return readContents;
 		}
 
-		private List<List<string>> readFile ()
+		private List<List<string>> readFileMobile ()
 		{
-			//String file = "Assets/Data/Nonprofits- Data Viz - Sheet1 copy.csv";
-			//String androidFilePath = Application.streamingAssetsPath + file;
-			string filename = "Nonprofits- Data Viz - Sheet1 copy.csv";
+			string deviceFilePath = getFileName (FileName);
 
-			string androidFilePath = getFileName (filename);
-			//string androidFilePath = System.IO.Path.Combine (Application.streamingAssetsPath, filename);
-
-			Debug.Log (androidFilePath);
-			WWW reader = new WWW (androidFilePath);
+			Debug.Log (deviceFilePath);
+			WWW reader = new WWW (deviceFilePath);
 			while (!reader.isDone) {
 			}
-
-			Debug.Log ("DATAVR: file read ..\n");
 
 			string result = System.Text.Encoding.UTF8.GetString (reader.bytes);
 		
@@ -115,12 +102,11 @@
 				csvList.Add (colList);
 			}			
 
-			Debug.Log ("DATAVR: File contents :\n" + result);
 			return csvList;
 		}
 
 
-		private List<List<string>> getData()
+		private List<List<string>> getData ()
 		{
 			switch (Application.platform) {
 			case RuntimePlatform.OSXEditor:
@@ -128,7 +114,7 @@
 				return readFileNonMobile ();
 			case RuntimePlatform.Android:
 			case RuntimePlatform.IPhonePlayer:
-				return readFile ();
+				return readFileMobile ();
 			}
 			return null;
 		}
@@ -137,11 +123,11 @@
 		// Use this for initialization
 		void Start ()
 		{
-			Debug.Log ("DATAVR: Start called...");
-			name = "datavr project";
+			Debug.Log ("DATAVR App: Start called...");
+		
 			statDefaultMarker = defaultMarker;
 			try {
-				List<List<string>> csvList = getData();
+				List<List<string>> csvList = getData ();
 				populateMarkerList (csvList);
 
 				Map.OnInitialized += () => {
@@ -153,18 +139,9 @@
 					}
 				}
 			} catch (Exception ex) {
-				Debug.Log ("DATAVR: DATAVREXCEPTION"+ ex.ToString ());
 				Debug.LogException (ex, this);
 			}
 		}
-
-
-		/*void OnLevelWasLoaded (int level)
-		{
-			Debug.Log ("On Level was loaded ...");
-			// Plot the markers when the scene is loaded again.
-			plotAllMarkers ();
-		}*/
 
 		public void performOnce ()
 		{
@@ -183,16 +160,18 @@
 		public void performAction ()
 		{
 			counter += 1;
-			Debug.Log ("DATAVR :Geoposition - Perform action() - counter value "+ counter);
+			Debug.Log ("DATAVR :Perform action() - Count : " + counter);
 			if (counter > 8) {
 				if (canRun ()) {
 					fetchHeightofAllMarkerLocations ();
 				} else {
 					//Plot the markers
-					plotAllMarkers ();
+					//TODO:Test the behaviour uncommenting or removing the next line for slippery map
+					//plotAllMarkers ();
 				}
 			} 
 			if (counter == 9) {
+				
 				fetchHeightofAllMarkerLocations ();
 				//Plot the markers
 				plotAllMarkers ();
@@ -207,15 +186,20 @@
 			return !(maxBuildingHeight > 0);
 		}
 
+		// Plot all the marker objects
 		private void plotAllMarkers ()
 		{
-			Debug.Log ("DATAVR : Plot all Markers");
 			foreach (MarkerObject marker in markerList) {
 				plotMarker (marker);
 			}
 		}
 
-		private string getFileName(string fileName)
+		/// <summary>
+		/// Returns the file name depending on the platform on which the app is running
+		/// </summary>
+		/// <returns>The file name.</returns>
+		/// <param name="fileName">File name.</param>
+		private string getFileName (string fileName)
 		{
 			string filename = fileName;
 			switch (Application.platform) {
@@ -224,7 +208,7 @@
 			case RuntimePlatform.IPhonePlayer:
 				
 				filename = System.IO.Path.Combine (Application.streamingAssetsPath, fileName);
-					break;
+				break;
 			default:
 				filename = "Assets/StreamingAssets/" + fileName;
 				break;
@@ -251,7 +235,7 @@
 				}
 				if (address != null && address.Length > 2) {
 
-					MarkerObject marker = new MarkerObject (address, title, type, telephone ,url);
+					MarkerObject marker = new MarkerObject (address, title, type, telephone, url);
 					markerList.Add (marker);
 				}
 			}
@@ -266,15 +250,12 @@
 			string filename = "Nonprofits- Data Viz - Sheet1 copy.csv";
 			string androidFilePath = System.IO.Path.Combine (Application.streamingAssetsPath, filename);
 
-			GeoCoding coder = new GeoCoding (Google_Maps_API_KEY);
+			GeoCoder coder = new GeoCoder (Google_Maps_API_KEY);
 			markerList = new List<MarkerObject> ();
 
 			using (CsvReader reader = new CsvReader (androidFilePath)) {
 				foreach (string[] values in reader.RowEnumerator) {
-					//Debug.Log(string.Format( "Row {0} has {1} values.", reader.RowIndex, values.Length ));
-					//foreach (string val in  values)
 					{
-						//Debug.Log ("val \t:" + val);
 						//Address read and plot
 						string address = values [2];
 						string type = values [1];
@@ -299,7 +280,7 @@
 		//Method which fetches populates the lat long fields of the list of marker objects
 		void fetchGeoLocation (List<MarkerObject> markerList)
 		{
-			GeoCoding coder = new GeoCoding (Google_Maps_API_KEY);
+			GeoCoder coder = new GeoCoder (Google_Maps_API_KEY);
 			Debug.Log ("No of marker in list while fetchint geo locaiton = " + (markerList.Count));
 			foreach (MarkerObject marker in  markerList) {
 
@@ -309,7 +290,7 @@
 					marker.latitide = location.lat;
 					marker.longitude = location.lng;
 
-					Vector3 unityWorldCoordinate = fetchUnityWorldCoordinatesFromLatLong (marker.latitide, marker.longitude);
+					Vector3 unityWorldCoordinate = getUnityWorldCoordinatesFromLatLong (marker.latitide, marker.longitude);
 
 					//Assign the x nd z values to the marker object so that marker object can be later placed in the unity world
 					marker.x = unityWorldCoordinate.x;
@@ -320,13 +301,16 @@
 		}
 
 
+		/// <summary>
+		/// Fetchs the maximum height of buildings at marker locations for all marker locations
+		///  For each marker object location, raycast downwards to find the height of the building at that point
+		/// </summary>
 		void fetchHeightofAllMarkerLocations ()
 		{
-			Debug.Log ("No of markers in the fetchHeightCall = " + markerList.Count); 
 			foreach (MarkerObject marker in markerList) {
-		
 				double height = getHeightAtTile (new Vector3 ((float)marker.x, 0f, (float)marker.z));
 				marker.y = (float)height;
+
 				if (height > maxBuildingHeight) {
 					maxBuildingHeight = height;
 				}
@@ -334,25 +318,34 @@
 			Debug.Log ("Maximum height so far  = " + maxBuildingHeight);
 		}
 
-		private Vector3 fetchUnityWorldCoordinatesFromLatLong (double latitide, double longitude)
+		/// <summary>
+		/// Returns the unity world coordinates for latitide and longitude.
+		/// </summary>
+		/// <returns>The unity world coordinates from lat long.</returns>
+		/// <param name="latitide">Latitide.</param>
+		/// <param name="longitude">Longitude.</param>
+		private Vector3 getUnityWorldCoordinatesFromLatLong (double latitide, double longitude)
 		{
 			var llpos = new Vector2d (latitide, longitude);
 			Vector3 pos = Conversions.GeoToWorldPosition (llpos, Map.CenterMercator, Map.WorldRelativeScale).ToVector3xz ();
 			return pos;
 		}
 
-
-
+		/// <summary>
+		/// Plots the marker.
+		/// </summary>
+		/// <param name="marker">Marker.</param>
 		void plotMarker (MarkerObject marker)
 		{
 			GameObject gameObject = statDefaultMarker;
 
+			// Get the custom gameobject to be instantiated for marker based on the type if it exists
 			if (markerTagging.ContainsKey (marker.type)) {
 				gameObject = markerTagging [marker.type];
 			}
 
+			// Instantiate the game object at the specified unity location and add the trigger scripts for gaze and click actions
 			Vector3 gameObjectPosition = new Vector3 ((float)marker.x, (float)maxBuildingHeight + 1, (float)marker.z);
-
 			GameObject placedMarker = Instantiate (gameObject, gameObjectPosition, Quaternion.identity);
 			placedMarker.name = marker.title;
 			MarkerEventTrigger trigger = placedMarker.AddComponent<MarkerEventTrigger> ();
@@ -364,7 +357,7 @@
 		{
 			RaycastHit hit;
 			float distance = 100f;
-			//Shoot ray from 50 points above the ground level
+			//Shoot ray from 50 points above the ground level - assumption is that buildings will not be more that 50 units
 			position.y = 50;
 
 			double height = 0;
@@ -373,8 +366,6 @@
 
 			if (Physics.Raycast (position, Vector3.down, out hit, distance)) {
 				targetLocation = hit.point;
-				//Debug.DrawLine (position, hit.point, Color.red, 100);
-				Debug.Log ("Ray cast hit position " + hit.point);
 				height = hit.point.y;
 			}
 

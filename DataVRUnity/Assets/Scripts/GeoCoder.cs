@@ -12,7 +12,7 @@ namespace edu.asu.cronkite.datavr
 	using System;
 	using UnityEngine.Networking;
 
-	public class GeoCoding : MonoBehaviour
+	public class GeoCoder : MonoBehaviour
 	{
 
 		protected string baseUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=";
@@ -20,7 +20,7 @@ namespace edu.asu.cronkite.datavr
 
 		public string API_KEY;
 
-		public GeoCoding (String apiKey)
+		public GeoCoder (String apiKey)
 		{
 			this.API_KEY = apiKey;
 		}
@@ -32,8 +32,6 @@ namespace edu.asu.cronkite.datavr
 			Location loc = null;
 			string url = baseUrl + address + key + API_KEY;
 			string jsonResponse = GET (url);
-
-			//string jsonResponse = MakeRequest(url);
 
 			RootObject result = JsonUtility.FromJson<RootObject> (jsonResponse);
 			if (result.results.Count > 0)
@@ -61,7 +59,7 @@ namespace edu.asu.cronkite.datavr
 					StreamReader reader = new StreamReader (responseStream, Encoding.GetEncoding ("utf-8"));
 					string errorText = reader.ReadToEnd ();
 					// log errorText
-					Debug.Log ("Exception in getting the GEO CODING for the url " + url);
+					Debug.Log ("Exception in getting the geo coding for the url " + url);
 				}
 				throw;
 			}
@@ -70,7 +68,7 @@ namespace edu.asu.cronkite.datavr
 
 		// Method for validating the certificate of the web request
 		public bool MyRemoteCertificateValidationCallback (System.Object sender,
-		                                                  X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+		                                                   X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
 		{
 			bool isOk = true;
 			// If there are errors in the certificate chain,
