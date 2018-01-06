@@ -8,6 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MapScene.unity
     guid: 8301052c2ff224abe8a3435e8ea75cbb
-  - enabled: 1
-    path: Assets/Scenes/MarkerInfo.unity
-    guid: 5af6795086c2b48e7b02cc09b8b0bc78
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000

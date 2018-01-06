@@ -54,6 +54,7 @@
 		public string name;
 		public string Google_Maps_API_KEY;
 		public string FileName;
+		public TextAsset textFile;
 
 		//TODO: Move the configurations to a different script file and make this file clean
 		public static MarkerObject selectedObject;
@@ -80,6 +81,23 @@
 
 			return csvList;
 		}
+
+		private List<List<string>> readTextAsset()
+		{
+			String readContents = textFile.text;	
+			char[] splitChars = { '\n' };
+			string[] array = readContents.Split (splitChars);
+
+			List<List<string>> csvList = new List<List<string>> ();
+
+			foreach (string sline in array) {
+				List<string> colList = CsvReader.csvColumnSplitProcessor (sline);
+				csvList.Add (colList);
+			}			
+
+			return csvList;
+		}
+
 
 		private List<List<string>> readFileMobile ()
 		{
@@ -111,10 +129,10 @@
 			switch (Application.platform) {
 			case RuntimePlatform.OSXEditor:
 			case RuntimePlatform.OSXPlayer:
-				return readFileNonMobile ();
+				return readTextAsset ();
 			case RuntimePlatform.Android:
 			case RuntimePlatform.IPhonePlayer:
-				return readFileMobile ();
+				return readTextAsset ();
 			}
 			return null;
 		}
