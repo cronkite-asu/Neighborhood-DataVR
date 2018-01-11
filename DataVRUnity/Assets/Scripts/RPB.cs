@@ -1,26 +1,45 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
-
-public class RPB : MonoBehaviour
+﻿namespace edu.asu.cronkite.datavr
 {
-	public Transform LoadingBar;
-	public Transform TextIndicator;
+	using System.Collections;
+	using System.Collections.Generic;
+	using UnityEngine;
+	using UnityEngine.UI;
+	using System;
 
-	[SerializeField] public float currentAmount;
-	[SerializeField] private float speed;
-
-	//Call on each frame update - updates the gaze timer when the user is looking on the marker objects
-	void Update ()
+	public class RPB : MonoBehaviour
 	{
-		if (currentAmount < 100) {
-			currentAmount += speed * Time.deltaTime;
-			//Uncomment to show the seconds remaining.
-			//TextIndicator.GetComponent<Text> ().text = ((int)currentAmount).ToString () + "s";
-		} else {
-			
+		public Transform LoadingBar;
+		public Transform TextIndicator;
+
+		/*[SerializeField]*/
+		private float currentAmount;
+		/*[SerializeField]*/
+		private float speed;
+		private float GazeTime = 0f;
+		public float GazeTimeLimit;
+
+		public void Start ()
+		{
+			LoadingBar.GetComponent<Image> ().fillAmount = 0;
+			GazeTimeLimit = GeoPosition.Instance.getGazeTimeLimit ();
 		}
-		LoadingBar.GetComponent<Image> ().fillAmount = currentAmount / 100;
+
+		//Call on each frame update - updates the gaze timer when the user is looking on the marker objects
+		/*void Update ()
+		{
+			GazeTime += Time.deltaTime;
+			LoadingBar.GetComponent<Image> ().fillAmount = GazeTime / GazeTimeLimit;
+		}*/
+
+
+		public void SetLoadingBarFillProgress(float progress)
+		{
+		LoadingBar.GetComponent<Image> ().fillAmount = progress;
+		}
+
+		public void Reset ()
+		{
+			LoadingBar.GetComponent<Image> ().fillAmount = 0;
+		}
 	}
 }

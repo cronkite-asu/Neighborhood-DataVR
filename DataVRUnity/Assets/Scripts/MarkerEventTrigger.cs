@@ -14,11 +14,24 @@
 		private bool isLookedAt = false;
 
 		// How long the user can gaze at this before the button is clicked.
-		public float timerDuration = 3f;
+		private float GazeLimit = 0f;
 
 		// Count time the player has been gazing at the button.
 		private float lookTimer = 0f;
 
+		private RPB RadialProgressBar;
+
+		void Start()
+		{
+			GameObject obj = GameObject.FindGameObjectWithTag ("MainCamera");
+			GameObject timerGazeGameObj = obj.transform.Find ("TimerGaze").gameObject;
+			GameObject timerGazeCanvas = timerGazeGameObj.transform.Find ("TimerGazeCanvas").gameObject;
+
+			GameObject progressbar = timerGazeCanvas.transform.Find ("RadialProgressBar").gameObject;
+			RadialProgressBar = progressbar.GetComponent<RPB> ();
+
+			GazeLimit = GeoPosition.Instance.getGazeTimeLimit ();
+		}
 
 		void Update () {
 
@@ -28,11 +41,14 @@
 				// Increment the gaze timer.
 				lookTimer += Time.deltaTime;
 
+				RadialProgressBar.SetLoadingBarFillProgress (lookTimer/GazeLimit);
+
 				// Gaze time exceeded limit - button is considered clicked.
-				if (lookTimer > timerDuration) {
+				if (lookTimer > GazeLimit) {
 					lookTimer = 0f; // reset the timer to zero for the next gaze
 					// Show marker information
 					showMarkerInfo();
+					RadialProgressBar.Reset ();
 				}
 			}
 
@@ -86,17 +102,24 @@
 		private void ShowGazeTimer(bool show)
 		{
 			GameObject obj = GameObject.FindGameObjectWithTag ("MainCamera");
-			GameObject timerCanvas = obj.transform.Find("TimerGazeCanvas").gameObject;
+			//GameObject obj = GameObject.Find("Player");
+			if (obj != null) {
+				GameObject timerCanvas = obj.transform.Find ("TimerGaze").gameObject;
 
-			//Show radial progress bar when the recticle pointer enters the game obejct 
-			if (show) {
-				timerCanvas.SetActive (true);
-				GameObject rpb = GameObject.Find("RadialProgressBar");
-				RPB script = rpb.GetComponent<RPB> ();
-				script.currentAmount = 0;
+				//Show radial progress bar when the recticle pointer enters the game obejct 
+				if (show) {
+					timerCanvas.SetActive (true);
+				} else {
+	
+					//GameObject rpb = GameObject.Find ("RadialProgressBar");
+					//RPB script = rpb.GetComponent<RPB> ();
+					RadialProgressBar.Reset();
+
+					//Hide the timer when the recticle pointer is moved out of marker object
+					timerCanvas.SetActive (false);
+				}
 			} else {
-				//Hide the timer when the recticle pointer is moved out of marker object
-				timerCanvas.SetActive (false);
+				Debug.Log ("Player is null");
 			}
 		}
 	}

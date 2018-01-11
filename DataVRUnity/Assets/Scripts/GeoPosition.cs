@@ -55,11 +55,17 @@
 		public string Google_Maps_API_KEY;
 		public string FileName;
 		public TextAsset textFile;
+		public float GazeTime;
+		private static float GazeTimeLimit;
 
 		//TODO: Move the configurations to a different script file and make this file clean
 		public static MarkerObject selectedObject;
 
 
+		public float getGazeTimeLimit()
+		{
+			return GazeTimeLimit;
+		}
 
 		//Read data file from android, ios, mac different ways
 		private List<List<string>> readFileNonMobile ()
@@ -144,6 +150,7 @@
 			Debug.Log ("DATAVR App: Start called...");
 		
 			statDefaultMarker = defaultMarker;
+			GazeTimeLimit = GazeTime;
 			try {
 				List<List<string>> csvList = getData ();
 				populateMarkerList (csvList);
