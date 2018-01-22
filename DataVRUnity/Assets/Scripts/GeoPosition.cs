@@ -24,21 +24,21 @@
 			public GameObject prefab;
 		}
 
-		private static GeoPosition instance;
+		private static GeoPosition instance =null;
 
-		private GeoPosition ()
-		{
-		}
+
 
 		public static GeoPosition Instance {
 			get {
 				if (instance == null) {
 					instance = new GeoPosition ();
-		
+					//List<List<string>> csvList = getData ();
+					//populateMarkerList (csvList);		
 				}
 				return instance;
 			}
 		}
+
 
 		public AbstractMap Map;
 		private static Dictionary<string, GameObject> markerTagging = new Dictionary<string, GameObject> ();
@@ -152,12 +152,15 @@
 			statDefaultMarker = defaultMarker;
 			GazeTimeLimit = GazeTime;
 			try {
-				List<List<string>> csvList = getData ();
-				populateMarkerList (csvList);
+				//List<List<string>> csvList = getData ();
+				//populateMarkerList (csvList);
+				markerList = Configuration.getFilteredList ();
 
 				Map.OnInitialized += () => {
 					fetchGeoLocation (markerList);
 				};
+
+
 				if (markerTagging.Count == 0) {
 					foreach (TypeMapping markerTag in markerTags) {
 						markerTagging.Add (markerTag.name, markerTag.prefab);
@@ -168,7 +171,7 @@
 			}
 		}
 
-		public void performOnce ()
+		/*public void performOnce ()
 		{
 			if (counter == 0) {
 				counter = counter + 1;
@@ -177,10 +180,12 @@
 					markerTagging.Add (markerTag.name, markerTag.prefab);
 				}
 					
-				readDataFile ();
-				fetchGeoLocation (markerList);
+				//readDataFile ();
+				//fetchGeoLocation (markerList);
 			}
-		}
+		}*/
+
+
 
 		public void performAction ()
 		{
@@ -214,6 +219,7 @@
 		// Plot all the marker objects
 		private void plotAllMarkers ()
 		{
+
 			foreach (MarkerObject marker in markerList) {
 				plotMarker (marker);
 			}
@@ -241,7 +247,7 @@
 			return filename;
 		}
 
-		void populateMarkerList (List<List<string>> csvList)
+		static void populateMarkerList (List<List<string>> csvList)
 		{
 			Debug.Log ("DATAVR : populate Marker List called...");
 			markerList = new List<MarkerObject> ();
