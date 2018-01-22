@@ -35,34 +35,49 @@
 		private static List<String> choosenFilters;
 		public Canvas filterCanvas;
 		public string googleMapsApiKey;
-		private Configuration(){
+
+		private Configuration ()
+		{
 			
 		}
 
 
-		private static Dictionary<string, bool> filterDict = new Dictionary<string, bool> ();
-	
-		public void filterValueChanged(string key, bool value)
-		{
-			filterDict[key] = value;
+		private static Configuration instance =null;
+
+
+
+		public static Configuration Instance {
+			get {
+				if (instance == null) {
+					instance = new Configuration ();
+				}
+				return instance;
+			}
 		}
 
-		public static List<MarkerObject> getFilteredList()
+
+		private static SortedDictionary<string, bool> filterDict;
+
+		public void filterValueChanged (string key, bool value)
+		{
+			filterDict [key] = value;
+		}
+
+		public static List<MarkerObject> getFilteredList ()
 		{
 			return filteredList;
 		}
 
-		public static void filterSelection()
+		public static void filterSelection ()
 		{
 			HashSet<string> selectedValues = new HashSet<string> ();
-			foreach(KeyValuePair<string, bool> entry in filterDict)
-			{
+			foreach (KeyValuePair<string, bool> entry in filterDict) {
 				// do something with entry.Value or entry.Key
 				if (entry.Value)
 					selectedValues.Add (entry.Key);
 			}
 
-			filteredList = new List<MarkerObject>();
+			filteredList = new List<MarkerObject> ();
 			foreach (MarkerObject marker in markerList) {
 				if (selectedValues.Contains (marker.type))
 					filteredList.Add (marker);
@@ -72,33 +87,22 @@
 		// Use this for initialization
 		void Start ()
 		{
-			//DontDestroyOnLoad (gameObject);
-			List<List<string>> csvList = getData ();
-			populateMarkerList (csvList);
+			// Read the files only when the scene is loaded for the first time
+			if (filterDict == null) {
+				filterDict = new SortedDictionary<string, bool> ();
+				List<List<string>> csvList = getData ();
+				populateMarkerList (csvList);
 
-
-
-			HashSet<string> typeSet = new HashSet<string> ();
-
-			foreach(MarkerObject markerObj in markerList)
-			{
-				typeSet.Add (markerObj.type);
-				filterValueChanged (markerObj.type, true);
+				foreach (MarkerObject markerObj in markerList) {
+					filterDict[markerObj.type] = true;
+				}
 			}
 
 			//Once the filters are obtained. display them in the canvas as checkboxes
-
 			FilterScript filterScript = filterCanvas.GetComponent<FilterScript> ();
-			filterScript.addCheckBoxesForTypes (typeSet);
+			filterScript.addCheckBoxesForTypes (filterDict);
 		}
-	
-		// Update is called once per frame
-		void Update ()
-		{
-		
-		}
-
-
+			
 		private List<List<string>> getData ()
 		{
 			switch (Application.platform) {

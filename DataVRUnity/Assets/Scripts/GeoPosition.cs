@@ -187,6 +187,8 @@
 
 
 
+
+
 		public void performAction ()
 		{
 			counter += 1;
@@ -208,6 +210,11 @@
 			} 	
 		}
 
+
+		public static void updateCounter(int count)
+		{
+			counter = count;
+		}
 			
 		//Return whether the run method can be called or not
 		public bool canRun ()
@@ -312,7 +319,6 @@
 		void fetchGeoLocation (List<MarkerObject> markerList)
 		{
 			GeoCoder coder = new GeoCoder (Google_Maps_API_KEY);
-			Debug.Log ("No of marker in list while fetchint geo locaiton = " + (markerList.Count));
 			foreach (MarkerObject marker in  markerList) {
 
 				Location location = coder.GetGeoLocationFromAddress (marker.address);
