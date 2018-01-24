@@ -29,22 +29,24 @@
 		public TypeMapping[] markerTags;
 		public GameObject defaultMarker;
 		private static int counter = 1;
-		private static GameObject statDefaultMarker;
+		public static GameObject statDefaultMarker;
+		public static Dictionary<string, GameObject> markerTagging = new Dictionary<string, GameObject> ();
 		private static string DEFAULT_MARKER = "default";
 		private static List<MarkerObject> filteredList;
 		private static List<String> choosenFilters;
 		public Canvas filterCanvas;
 		public string googleMapsApiKey;
+		public float markerHeight;
+		public static float sMarkerHeight;
+		public float gazeTime;
+		public static float gazeTimeLimit;
+		private static string googleMapKey;
 
 		private Configuration ()
 		{
-			
 		}
 
-
-		private static Configuration instance =null;
-
-
+		private static Configuration instance = null;
 
 		public static Configuration Instance {
 			get {
@@ -55,6 +57,10 @@
 			}
 		}
 
+		public static string getGoogleMapsApiKey ()
+		{
+			return googleMapKey;
+		}
 
 		private static SortedDictionary<string, bool> filterDict;
 
@@ -89,20 +95,30 @@
 		{
 			// Read the files only when the scene is loaded for the first time
 			if (filterDict == null) {
+				statDefaultMarker = defaultMarker;
+				sMarkerHeight = markerHeight;
+				gazeTimeLimit = gazeTime;
+
 				filterDict = new SortedDictionary<string, bool> ();
 				List<List<string>> csvList = getData ();
 				populateMarkerList (csvList);
 
 				foreach (MarkerObject markerObj in markerList) {
-					filterDict[markerObj.type] = true;
+					filterDict [markerObj.type] = true;
+				}
+
+				foreach (Configuration.TypeMapping markerTag in markerTags) {
+					markerTagging.Add (markerTag.name, markerTag.prefab);
 				}
 			}
+
+
 
 			//Once the filters are obtained. display them in the canvas as checkboxes
 			FilterScript filterScript = filterCanvas.GetComponent<FilterScript> ();
 			filterScript.addCheckBoxesForTypes (filterDict);
 		}
-			
+
 		private List<List<string>> getData ()
 		{
 			switch (Application.platform) {

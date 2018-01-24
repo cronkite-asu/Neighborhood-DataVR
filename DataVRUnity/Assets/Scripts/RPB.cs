@@ -24,14 +24,6 @@
 			GazeTimeLimit = GeoPosition.Instance.getGazeTimeLimit ();
 		}
 
-		//Call on each frame update - updates the gaze timer when the user is looking on the marker objects
-		/*void Update ()
-		{
-			GazeTime += Time.deltaTime;
-			LoadingBar.GetComponent<Image> ().fillAmount = GazeTime / GazeTimeLimit;
-		}*/
-
-
 		public void SetLoadingBarFillProgress(float progress)
 		{
 		LoadingBar.GetComponent<Image> ().fillAmount = progress;

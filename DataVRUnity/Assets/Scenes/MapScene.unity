@@ -644,11 +644,11 @@ MonoBehaviour:
     prefab: {fileID: 1232540922620762, guid: 6401f1e8bf26f481fa6e7fd713b39bf1, type: 2}
   defaultMarker: {fileID: 1232540922620762, guid: 6401f1e8bf26f481fa6e7fd713b39bf1,
     type: 2}
-  name: test
   Google_Maps_API_KEY: AIzaSyDE2QQoBjqqXpMVt3UG1ZD4Rs_XSFQRqfw
   FileName: Nonprofits- Data Viz - Sheet1 copy.csv
   textFile: {fileID: 4900000, guid: 9dfd5f6c748424f6b9ebaf01664d05c5, type: 3}
   GazeTime: 5
+  markerHeight: 0
 --- !u!4 &590292603
 Transform:
   m_ObjectHideFlags: 0
@@ -677,6 +677,7 @@ GameObject:
   - component: {fileID: 812483992}
   - component: {fileID: 812483990}
   - component: {fileID: 812483991}
+  - component: {fileID: 812483993}
   m_Layer: 8
   m_Name: Map
   m_TagString: Untagged
@@ -731,6 +732,21 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &812483993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 812483989}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d7ff8ed3b76a4ee5a451d64a5393e3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _west: 1
+  _north: 1
+  _east: 1
+  _south: 1
 --- !u!1 &827916391
 GameObject:
   m_ObjectHideFlags: 0

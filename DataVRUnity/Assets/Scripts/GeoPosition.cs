@@ -17,23 +17,12 @@
 	[System.Serializable]
 	public class GeoPosition : MonoBehaviour
 	{
-		[System.Serializable]
-		public struct TypeMapping
-		{
-			public string name;
-			public GameObject prefab;
-		}
-
-		private static GeoPosition instance =null;
-
-
+		private static GeoPosition instance = null;
 
 		public static GeoPosition Instance {
 			get {
 				if (instance == null) {
 					instance = new GeoPosition ();
-					//List<List<string>> csvList = getData ();
-					//populateMarkerList (csvList);		
 				}
 				return instance;
 			}
@@ -41,34 +30,22 @@
 
 
 		public AbstractMap Map;
-		private static Dictionary<string, GameObject> markerTagging = new Dictionary<string, GameObject> ();
-		public TypeMapping[] markerTags;
-		public GameObject defaultMarker;
+		private static Dictionary<string, GameObject> markerTagging;
 		private static int counter = 1;
-		private static GameObject statDefaultMarker;
-	
-
-		private static double maxBuildingHeight = 0;
-		private static string DEFAULT_MARKER = "default";
-		private static List<MarkerObject> markerList;
-		public string name;
-		public string Google_Maps_API_KEY;
-		public string FileName;
-		public TextAsset textFile;
-		public float GazeTime;
-		private static float GazeTimeLimit;
-
-		//TODO: Move the configurations to a different script file and make this file clean
+		private GameObject statDefaultMarker;
+		private double maxBuildingHeight = 0;
+		private string DEFAULT_MARKER = "default";
+		private List<MarkerObject> markerList;
 		public static MarkerObject selectedObject;
 
 
-		public float getGazeTimeLimit()
+		public float getGazeTimeLimit ()
 		{
-			return GazeTimeLimit;
+			return Configuration.gazeTimeLimit;
 		}
 
 		//Read data file from android, ios, mac different ways
-		private List<List<string>> readFileNonMobile ()
+		/*private List<List<string>> readFileNonMobile ()
 		{
 			string filePath = getFileName (FileName);
 			string readContents;
@@ -88,7 +65,7 @@
 			return csvList;
 		}
 
-		private List<List<string>> readTextAsset()
+		/*private List<List<string>> readTextAsset()
 		{
 			String readContents = textFile.text;	
 			char[] splitChars = { '\n' };
@@ -104,7 +81,8 @@
 			return csvList;
 		}
 
-
+*/
+		/*
 		private List<List<string>> readFileMobile ()
 		{
 			string deviceFilePath = getFileName (FileName);
@@ -142,55 +120,34 @@
 			}
 			return null;
 		}
-
+			
+		*/
 
 		// Use this for initialization
 		void Start ()
 		{
 			Debug.Log ("DATAVR App: Start called...");
 		
-			statDefaultMarker = defaultMarker;
-			GazeTimeLimit = GazeTime;
+			statDefaultMarker = Configuration.statDefaultMarker;
+			maxBuildingHeight = Configuration.sMarkerHeight;
+			markerTagging = Configuration.markerTagging;
+
 			try {
-				//List<List<string>> csvList = getData ();
-				//populateMarkerList (csvList);
 				markerList = Configuration.getFilteredList ();
 
 				Map.OnInitialized += () => {
 					fetchGeoLocation (markerList);
+					plotAllMarkers ();
 				};
 
-
-				if (markerTagging.Count == 0) {
-					foreach (TypeMapping markerTag in markerTags) {
-						markerTagging.Add (markerTag.name, markerTag.prefab);
-					}
-				}
 			} catch (Exception ex) {
 				Debug.LogException (ex, this);
 			}
 		}
 
-		/*public void performOnce ()
-		{
-			if (counter == 0) {
-				counter = counter + 1;
-
-				foreach (TypeMapping markerTag in markerTags) {
-					markerTagging.Add (markerTag.name, markerTag.prefab);
-				}
-					
-				//readDataFile ();
-				//fetchGeoLocation (markerList);
-			}
-		}*/
-
-
-
-
 
 		public void performAction ()
-		{
+		{/*
 			counter += 1;
 			Debug.Log ("DATAVR :Perform action() - Count : " + counter);
 			if (counter > 8) {
@@ -207,11 +164,12 @@
 				fetchHeightofAllMarkerLocations ();
 				//Plot the markers
 				plotAllMarkers ();
-			} 	
+			} 
+			*/
 		}
 
 
-		public static void updateCounter(int count)
+		public static void updateCounter (int count)
 		{
 			counter = count;
 		}
@@ -254,7 +212,7 @@
 			return filename;
 		}
 
-		static void populateMarkerList (List<List<string>> csvList)
+		/*static void populateMarkerList (List<List<string>> csvList)
 		{
 			Debug.Log ("DATAVR : populate Marker List called...");
 			markerList = new List<MarkerObject> ();
@@ -278,7 +236,7 @@
 				}
 			}
 			Debug.Log ("DATAVR: Populate marker list completed...");
-		}
+		}*/
 
 
 		void readDataFile ()
@@ -288,7 +246,7 @@
 			string filename = "Nonprofits- Data Viz - Sheet1 copy.csv";
 			string androidFilePath = System.IO.Path.Combine (Application.streamingAssetsPath, filename);
 
-			GeoCoder coder = new GeoCoder (Google_Maps_API_KEY);
+			GeoCoder coder = new GeoCoder (Configuration.getGoogleMapsApiKey ());
 			markerList = new List<MarkerObject> ();
 
 			using (CsvReader reader = new CsvReader (androidFilePath)) {
@@ -314,11 +272,12 @@
 				}
 			}
 		}
+			
 
 		//Method which fetches populates the lat long fields of the list of marker objects
 		void fetchGeoLocation (List<MarkerObject> markerList)
 		{
-			GeoCoder coder = new GeoCoder (Google_Maps_API_KEY);
+			GeoCoder coder = new GeoCoder (Configuration.getGoogleMapsApiKey ());	
 			foreach (MarkerObject marker in  markerList) {
 
 				Location location = coder.GetGeoLocationFromAddress (marker.address);

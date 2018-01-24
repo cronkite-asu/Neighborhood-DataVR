@@ -162,7 +162,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_HorizontalFit: 1
-  m_VerticalFit: 1
+  m_VerticalFit: 2
 --- !u!114 &46165078
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -435,11 +435,6 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 463285ecd6702471a909ba810832bf0e, type: 2}
   m_IsPrefabParent: 0
---- !u!224 &247407793 stripped
-RectTransform:
-  m_PrefabParentObject: {fileID: 224426600087954908, guid: 44e65992bfbea4a189d32212b70c5f99,
-    type: 2}
-  m_PrefabInternal: {fileID: 495024337}
 --- !u!1001 &288551061
 Prefab:
   m_ObjectHideFlags: 0
@@ -791,7 +786,7 @@ Prefab:
     - target: {fileID: 224155408956018902, guid: 44e65992bfbea4a189d32212b70c5f99,
         type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 224647005981677694, guid: 44e65992bfbea4a189d32212b70c5f99,
         type: 2}
@@ -1043,12 +1038,12 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 700647487}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 110.5, y: 0, z: 0}
+  m_LocalPosition: {x: 110.5, y: 0, z: 0.000016382342}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1071534114}
-  m_Father: {fileID: 247407793}
-  m_RootOrder: 2
+  m_Father: {fileID: 1457499077}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1249,7 +1244,7 @@ MonoBehaviour:
   m_Script: {fileID: -1200242548, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_ShowMaskGraphic: 0
+  m_ShowMaskGraphic: 1
 --- !u!1 &1398659221
 GameObject:
   m_ObjectHideFlags: 0
@@ -1282,7 +1277,9 @@ MonoBehaviour:
   defaultMarker: {fileID: 1232540922620762, guid: 6401f1e8bf26f481fa6e7fd713b39bf1,
     type: 2}
   filterCanvas: {fileID: 218853723}
-  googleMapsApiKey: 
+  googleMapsApiKey: AIzaSyDE2QQoBjqqXpMVt3UG1ZD4Rs_XSFQRqfw
+  markerHeight: 15
+  gazeTime: 5
 --- !u!4 &1398659223
 Transform:
   m_ObjectHideFlags: 0
@@ -1306,7 +1303,6 @@ GameObject:
   - component: {fileID: 1457499077}
   - component: {fileID: 1457499080}
   - component: {fileID: 1457499079}
-  - component: {fileID: 1457499078}
   m_Layer: 5
   m_Name: ButtonScrollList
   m_TagString: Untagged
@@ -1321,49 +1317,19 @@ RectTransform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1457499076}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -9.199997, y: 2.899994, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1098640119}
-  m_Father: {fileID: 247407793}
+  - {fileID: 700647488}
+  m_Father: {fileID: 1936091147}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -9.199997, y: 2.899994}
   m_SizeDelta: {x: 200, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1457499078
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1457499076}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1367256648, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Content: {fileID: 46165076}
-  m_Horizontal: 0
-  m_Vertical: 1
-  m_MovementType: 2
-  m_Elasticity: 0.1
-  m_Inertia: 1
-  m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
-  m_Viewport: {fileID: 1098640119}
-  m_HorizontalScrollbar: {fileID: 0}
-  m_VerticalScrollbar: {fileID: 700647489}
-  m_HorizontalScrollbarVisibility: 0
-  m_VerticalScrollbarVisibility: 1
-  m_HorizontalScrollbarSpacing: 0
-  m_VerticalScrollbarSpacing: 0
-  m_OnValueChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.ScrollRect+ScrollRectEvent, UnityEngine.UI, Version=1.0.0.0,
-      Culture=neutral, PublicKeyToken=null
 --- !u!114 &1457499079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1443,6 +1409,11 @@ Prefab:
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 970dd4b9371394fb4890965f608d46fd, type: 2}
   m_IsPrefabParent: 0
+--- !u!224 &1936091147 stripped
+RectTransform:
+  m_PrefabParentObject: {fileID: 224647005981677694, guid: 44e65992bfbea4a189d32212b70c5f99,
+    type: 2}
+  m_PrefabInternal: {fileID: 495024337}
 --- !u!4 &2052448305 stripped
 Transform:
   m_PrefabParentObject: {fileID: 482300, guid: 60270cf52a5e94998a5a335989159738, type: 2}
