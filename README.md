@@ -20,18 +20,27 @@ Google GeoLocation API Key -  https://developers.google.com/maps/documentation/g
 ## Getting Started:
 Once the API keys are obtained, they can be configured in the asset.
 
-Open MapScene from `Assets->Scenes->MapScene`
+Open MapScene from `Assets->Scenes->FilterScene`
 
-Click on the GameObject named 'Configuration' and in the Inspector panel under Scripts sections, you will find the text box named 'Google_Maps_API_KEY' and provide the Google Geo Location API Key here.
+Click on the GameObject named `Configuration` and in the Inspector panel under Scripts sections, you will find the text box named `Google Maps Api Key` and provide the Google Geo Location API Key here.
 
 For adding mapbox API key, Choose `Mapbox->Configure` and provide the mapbox API key in the access token field and save it.
 
-Geolocation data (preferably in .csv file) should be placed in the `Assets->StreamingAssets` folder of the project and this data will be packaged along with the application.
- 
-Name of the file should be given in the previous configuration game object.
+Geolocation data (preferably in .csv file) should be provided int eh Data Field as mentioned below.
+Drag and drop the file in the `Data File` field of the `Configuration` game object's inspector.
 
-Also, configure the initial location in the configuration game object for starting.
+Also, configure the initial location in the configuration game object of MapScene for loading initial location.
 
+#### Configuration parameters
+
+`Default Marker` - Field where the default marker's icon object should be placed.
+
+`Marker Height` - Height of the markers over the buildings. Based on the data and location adjust the height of the markers.
+
+`Gaze Time` - Maximum time that user should gaze so that click action is performed on the marker object.
+
+`Data File` - Field where the CSV data file should be dragged and dropped.
+              Code expects the CSV file to have the columns in the following order - Title, Type, Address, Contact Number, Website information. 
 
 #### For changing markers displayed:
 
