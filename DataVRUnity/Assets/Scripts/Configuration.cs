@@ -24,21 +24,33 @@
 			public GameObject prefab;
 		}
 
-		public TextAsset textFile;
-		private static List<MarkerObject> markerList;
+		// CSV file containing data for plotting markers
+		public TextAsset dataFile; 
+
+		//Custom marker objects for plotting differnt markers based on the types
 		public TypeMapping[] markerTags;
+
+		// Default marker object when custom object is not defined for a type
 		public GameObject defaultMarker;
+		public Canvas filterCanvas;
+
+		// Gaze time for user input
+		public float gazeTime;
+
+		// Google map api key for geocoding address
+		public string googleMapsApiKey;
+
+		private static List<MarkerObject> markerList;
 		private static int counter = 1;
-		public static GameObject statDefaultMarker;
-		public static Dictionary<string, GameObject> markerTagging = new Dictionary<string, GameObject> ();
 		private static string DEFAULT_MARKER = "default";
 		private static List<MarkerObject> filteredList;
 		private static List<String> choosenFilters;
-		public Canvas filterCanvas;
-		public string googleMapsApiKey;
+
+		// Dict of the marker type and gameobject to be plotted for that marker
+		public static Dictionary<string, GameObject> markerTagging = new Dictionary<string, GameObject> ();
+		public static GameObject statDefaultMarker;
 		public float markerHeight;
 		public static float sMarkerHeight;
-		public float gazeTime;
 		public static float gazeTimeLimit;
 		private static string googleMapKey;
 
@@ -135,7 +147,7 @@
 
 		private List<List<string>> readTextAsset ()
 		{
-			String readContents = textFile.text;	
+			String readContents = dataFile.text;	
 			char[] splitChars = { '\n' };
 			string[] array = readContents.Split (splitChars);
 

@@ -962,6 +962,16 @@ Prefab:
       propertyPath: m_Name
       value: FilterButton
       objectReference: {fileID: 0}
+    - target: {fileID: 114096472634390738, guid: 44e65992bfbea4a189d32212b70c5f99,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 114096472634390738, guid: 44e65992bfbea4a189d32212b70c5f99,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 114251348234611910, guid: 44e65992bfbea4a189d32212b70c5f99, type: 2}
     - {fileID: 114225091092817244, guid: 44e65992bfbea4a189d32212b70c5f99, type: 2}
@@ -1190,14 +1200,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d34df15aea3354073969f56e80abed2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textFile: {fileID: 4900000, guid: 9dfd5f6c748424f6b9ebaf01664d05c5, type: 3}
+  dataFile: {fileID: 0}
   markerTags: []
   defaultMarker: {fileID: 1232540922620762, guid: 6401f1e8bf26f481fa6e7fd713b39bf1,
     type: 2}
   filterCanvas: {fileID: 218853723}
-  googleMapsApiKey: AIzaSyDE2QQoBjqqXpMVt3UG1ZD4Rs_XSFQRqfw
-  markerHeight: 15
   gazeTime: 5
+  googleMapsApiKey: 
+  markerHeight: 15
 --- !u!4 &1398659223
 Transform:
   m_ObjectHideFlags: 0
@@ -1205,7 +1215,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1398659221}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.18277, y: -24.17192, z: 524.09717}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

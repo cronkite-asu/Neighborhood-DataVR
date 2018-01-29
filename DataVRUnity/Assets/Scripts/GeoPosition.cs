@@ -82,6 +82,7 @@
 		}
 
 */
+
 		/*
 		private List<List<string>> readFileMobile ()
 		{
@@ -147,25 +148,12 @@
 
 
 		public void performAction ()
-		{/*
-			counter += 1;
-			Debug.Log ("DATAVR :Perform action() - Count : " + counter);
-			if (counter > 8) {
-				if (canRun ()) {
-					fetchHeightofAllMarkerLocations ();
-				} else {
-					//Plot the markers
-					//TODO:Test the behaviour uncommenting or removing the next line for slippery map
-					//plotAllMarkers ();
-				}
-			} 
-			if (counter == 9) {
-				
-				fetchHeightofAllMarkerLocations ();
-				//Plot the markers
-				plotAllMarkers ();
-			} 
-			*/
+		{
+			// Method to perform some actions when the tile is loaded completely.
+
+			// When fixed number of tiles are rendered we can perform some operations is finding
+			// height of the building at the generated tile and the marker height can be adjusted
+			// depending on the height of all the tile dynamically.
 		}
 
 
@@ -211,39 +199,13 @@
 			}
 			return filename;
 		}
-
-		/*static void populateMarkerList (List<List<string>> csvList)
-		{
-			Debug.Log ("DATAVR : populate Marker List called...");
-			markerList = new List<MarkerObject> ();
-
-			foreach (List<string> colList in csvList) {
-				string address = colList [2];
-				string type = colList [1];
-				string title = colList [0];
-				string telephone = colList [3];
-				string url = colList [4];
-
-
-				//If type is not mentioned get the default type
-				if (type == null || type.Length < 2) {
-					type = DEFAULT_MARKER;
-				}
-				if (address != null && address.Length > 2) {
-
-					MarkerObject marker = new MarkerObject (address, title, type, telephone, url);
-					markerList.Add (marker);
-				}
-			}
-			Debug.Log ("DATAVR: Populate marker list completed...");
-		}*/
-
-
-		void readDataFile ()
+			
+		// Method for reading data from the file when raw file is imported instead of TestAsset
+		private void readDataFile ()
 		{
 			Debug.Log ("Reading data from file...");
 
-			string filename = "Nonprofits- Data Viz - Sheet1 copy.csv";
+			string filename = ""; // Provide the file name here to read raw file
 			string androidFilePath = System.IO.Path.Combine (Application.streamingAssetsPath, filename);
 
 			GeoCoder coder = new GeoCoder (Configuration.getGoogleMapsApiKey ());

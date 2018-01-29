@@ -42,9 +42,9 @@
 		}
 
 		// Modify this method to change the content to be displayed on the marker inforamtion poped up on clicking
-		public string getContentDisplayText()
+		public string getContentDisplayText ()
 		{
-			return type+"\n"+ address +"\n" + telephone + "\n"+ url;
+			return type + "\n" + address + "\n" + telephone + "\n" + url;
 		}
 	}
 }
