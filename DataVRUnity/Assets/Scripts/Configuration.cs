@@ -32,7 +32,7 @@
 
 		// Default marker object when custom object is not defined for a type
 		public GameObject defaultMarker;
-		public Canvas filterCanvas;
+		public GameObject filterCanvas;
 
 		// Gaze time for user input
 		public float gazeTime;
