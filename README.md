@@ -20,16 +20,16 @@ Google GeoLocation API Key -  https://developers.google.com/maps/documentation/g
 ## Getting Started:
 Once the API keys are obtained, they can be configured in the asset.
 
-Open MapScene from `Assets->Scenes->FilterScene`
+Open FilterScene from `Assets->Scenes->FilterScene`
 
 Click on the GameObject named `Configuration` and in the Inspector panel under Scripts sections, you will find the text box named `Google Maps Api Key` and provide the Google Geo Location API Key here.
 
 For adding mapbox API key, Choose `Mapbox->Configure` and provide the mapbox API key in the access token field and save it.
 
-Geolocation data (preferably in .csv file) should be provided int eh Data Field as mentioned below.
-Drag and drop the file in the `Data File` field of the `Configuration` game object's inspector.
+Geolocation data (preferably in .csv file) should be provided in the Data Field as mentioned below.
+Drag and drop the file in the `Data File` field of the `Configuration` GameObject's inspector.
 
-Also, configure the initial location in the configuration game object of MapScene for loading initial location.
+Next load MapScene from `Assets->Scenes->MapScene` and configure the initial location of data in the Map GameObject.
 
 #### Configuration parameters
 
