@@ -30,7 +30,7 @@ Geolocation data (preferably in .csv file) should be provided in the Data Field 
 Drag and drop the file in the `Data File` field of the `Configuration` GameObject's inspector.
 
 Next load MapScene from `Assets->Scenes->MapScene` and configure the initial location of data in the Map GameObject.
-![Screenshot](MapSceneConfig.png)
+![alt text](Images/MapSceneConfig.png "MapScene Configuration")
 
 #### Configuration parameters
 
