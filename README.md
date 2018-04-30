@@ -29,7 +29,8 @@ For adding mapbox API key, Choose `Mapbox->Configure` and provide the mapbox API
 Geolocation data (preferably in .csv file) should be provided in the Data Field as mentioned below.
 Drag and drop the file in the `Data File` field of the `Configuration` GameObject's inspector.
 
-Next load MapScene from `Assets->Scenes->MapScene` and configure the initial location of data in the Map GameObject.
+Next load MapScene from `Assets->Scenes->MapScene` and configure the initial location of data in the map GameObject.
+![Screenshot]("/Images/MapSceneConfig.png")
 
 #### Configuration parameters
 
