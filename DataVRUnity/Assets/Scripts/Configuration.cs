@@ -1,20 +1,10 @@
 ﻿namespace edu.asu.cronkite.datavr
 {
-	using System.Collections;
-	using System.Collections.Generic;
-	using UnityEngine;
-	using Mapbox.Unity.Location;
-	using Mapbox.Unity.Utilities;
-	using Mapbox.Unity.Map;
-	using Mapbox.Utils;
-	using Mapbox.Unity.MeshGeneration.Modifiers;
-	using UnityEngine.SceneManagement;
-	using System.IO;
-	using System.Collections.Generic;
-	using System;
+    using UnityEngine;
+    using System.Collections.Generic;
+    using System;
 
-
-	public class Configuration : MonoBehaviour
+    public class Configuration : MonoBehaviour
 	{
 
 		[System.Serializable]
@@ -24,20 +14,20 @@
 			public GameObject prefab;
 		}
 
-		// CSV file containing data for plotting markers
+		// CSV file containing data for plotting markers.
 		public TextAsset dataFile; 
 
-		//Custom marker objects for plotting differnt markers based on the types
+		//Custom marker objects for plotting differnt markers based on the types.
 		public TypeMapping[] markerTags;
 
-		// Default marker object when custom object is not defined for a type
+		// Default marker object when custom object is not defined for a type.
 		public GameObject defaultMarker;
 		public GameObject filterCanvas;
 
-		// Gaze time for user input
+		// Gaze time for user input.
 		public float gazeTime;
 
-		// Google map api key for geocoding address
+		// Google map API key for geocoding address.
 		public string googleMapsApiKey;
 
 		private static List<MarkerObject> markerList;
@@ -46,7 +36,7 @@
 		private static List<MarkerObject> filteredList;
 		private static List<String> choosenFilters;
 
-		// Dict of the marker type and gameobject to be plotted for that marker
+		// Dict of the marker type and GameObject to be plotted for that marker.
 		public static Dictionary<string, GameObject> markerTagging = new Dictionary<string, GameObject> ();
 		public static GameObject statDefaultMarker;
 		public float markerHeight;
@@ -90,7 +80,7 @@
 		{
 			HashSet<string> selectedValues = new HashSet<string> ();
 			foreach (KeyValuePair<string, bool> entry in filterDict) {
-				// do something with entry.Value or entry.Key
+				// Do something with entry. Value or entry.Key.
 				if (entry.Value)
 					selectedValues.Add (entry.Key);
 			}
@@ -102,10 +92,9 @@
 			}
 		}
 
-		// Use this for initialization
 		void Start ()
 		{
-			// Read the files only when the scene is loaded for the first time
+			// Read the files only when the scene is loaded for the first time.
 			if (filterDict == null) {
 				statDefaultMarker = defaultMarker;
 				sMarkerHeight = markerHeight;
@@ -123,10 +112,7 @@
 					markerTagging.Add (markerTag.name, markerTag.prefab);
 				}
 			}
-
-
-
-			//Once the filters are obtained. display them in the canvas as checkboxes
+			// Once the filters are obtained, display them in the canvas as checkboxes.
 			FilterScript filterScript = filterCanvas.GetComponent<FilterScript> ();
 			filterScript.addCheckBoxesForTypes (filterDict);
 		}
@@ -144,7 +130,6 @@
 			return null;
 		}
 
-
 		private List<List<string>> readTextAsset ()
 		{
 			String readContents = dataFile.text;	
@@ -156,12 +141,9 @@
 			foreach (string sline in array) {
 				List<string> colList = CsvReader.csvColumnSplitProcessor (sline);
 				csvList.Add (colList);
-			}			
-
+			}
 			return csvList;
 		}
-
-
 
 		void populateMarkerList (List<List<string>> csvList)
 		{
@@ -175,8 +157,7 @@
 				string telephone = colList [3];
 				string url = colList [4];
 
-
-				//If type is not mentioned get the default type
+				// If type is not mentioned get the default type.
 				if (type == null || type.Length < 2) {
 					type = DEFAULT_MARKER;
 				}

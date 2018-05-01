@@ -1,20 +1,14 @@
 ﻿namespace edu.asu.cronkite.datavr
 {
-	using System.Collections;
-	using System.Collections.Generic;
-	using UnityEngine;
-	using Mapbox.Unity.Location;
-	using Mapbox.Unity.Utilities;
-	using Mapbox.Unity.Map;
-	using Mapbox.Utils;
-	using Mapbox.Unity.MeshGeneration.Modifiers;
-	using UnityEngine.SceneManagement;
-	using System.IO;
-	using System.Collections.Generic;
-	using System;
+    using UnityEngine;
+    using System.Collections.Generic;
+    using Mapbox.Unity.Utilities;
+    using Mapbox.Unity.Map;
+    using Mapbox.Utils;
+    using System;
 
 
-	[System.Serializable]
+    [System.Serializable]
 	public class GeoPosition : MonoBehaviour
 	{
 		private static GeoPosition instance = null;
@@ -27,7 +21,6 @@
 				return instance;
 			}
 		}
-
 
 		public AbstractMap Map;
 		private static Dictionary<string, GameObject> markerTagging;
@@ -124,11 +117,9 @@
 			
 		*/
 
-		// Use this for initialization
 		void Start ()
 		{
-			Debug.Log ("DATAVR App: Start called...");
-		
+			Debug.Log ("DATAVR App: Start called...");		
 			statDefaultMarker = Configuration.statDefaultMarker;
 			maxBuildingHeight = Configuration.sMarkerHeight;
 			markerTagging = Configuration.markerTagging;
@@ -150,26 +141,24 @@
 		public void performAction ()
 		{
 			// Method to perform some actions when the tile is loaded completely.
-
 			// When fixed number of tiles are rendered we can perform some operations is finding
 			// height of the building at the generated tile and the marker height can be adjusted
 			// depending on the height of all the tile dynamically.
 		}
-
 
 		public static void updateCounter (int count)
 		{
 			counter = count;
 		}
 			
-		//Return whether the run method can be called or not
+		// Return whether the run method can be called or not.
 		public bool canRun ()
 		{
-			//Run untill all the building layers are called.
+			// Run untill all the building layers are called.
 			return !(maxBuildingHeight > 0);
 		}
 
-		// Plot all the marker objects
+		// Plot all the marker objects.
 		private void plotAllMarkers ()
 		{
 
@@ -214,14 +203,14 @@
 			using (CsvReader reader = new CsvReader (androidFilePath)) {
 				foreach (string[] values in reader.RowEnumerator) {
 					{
-						//Address read and plot
+						// Address read and plot.
 						string address = values [2];
 						string type = values [1];
 						string title = values [0];
 						string telephone = values [3];
 						string url = values [4];
 
-						//If type is not mentioned get the default type
+						// If type is not mentioned get the default type.
 						if (type == null || type.Length < 2) {
 							type = DEFAULT_MARKER;
 						}
@@ -236,7 +225,7 @@
 		}
 			
 
-		//Method which fetches populates the lat long fields of the list of marker objects
+		// Method which fetches populates the lat long fields of the list of marker objects.
 		void fetchGeoLocation (List<MarkerObject> markerList)
 		{
 			GeoCoder coder = new GeoCoder (Configuration.getGoogleMapsApiKey ());	
@@ -250,18 +239,17 @@
 
 					Vector3 unityWorldCoordinate = getUnityWorldCoordinatesFromLatLong (marker.latitide, marker.longitude);
 
-					//Assign the x nd z values to the marker object so that marker object can be later placed in the unity world
+					// Assign the x nd z values to the marker object so that marker object can be later placed in the unity world.
 					marker.x = unityWorldCoordinate.x;
 					marker.z = unityWorldCoordinate.z;
-					//Later we fetch the y coordinate when the colliders are added and the map is completely initialized.
+					// Later we fetch the y coordinate when the colliders are added and the map is completely initialized.
 				}
 			}
 		}
 
-
 		/// <summary>
-		/// Fetchs the maximum height of buildings at marker locations for all marker locations
-		///  For each marker object location, raycast downwards to find the height of the building at that point
+		/// Fetches the maximum height of buildings at marker locations for all marker locations.
+		///  For each marker object location, raycast downwards to find the height of the building at that point.
 		/// </summary>
 		void fetchHeightofAllMarkerLocations ()
 		{
@@ -297,12 +285,12 @@
 		{
 			GameObject gameObject = statDefaultMarker;
 
-			// Get the custom gameobject to be instantiated for marker based on the type if it exists
+			// Get the custom gameobject to be instantiated for marker based on the type if it exists.
 			if (markerTagging.ContainsKey (marker.type)) {
 				gameObject = markerTagging [marker.type];
 			}
 
-			// Instantiate the game object at the specified unity location and add the trigger scripts for gaze and click actions
+			// Instantiate the game object at the specified unity location and add the trigger scripts for gaze and click actions.
 			Vector3 gameObjectPosition = new Vector3 ((float)marker.x, (float)maxBuildingHeight + 1, (float)marker.z);
 			GameObject placedMarker = Instantiate (gameObject, gameObjectPosition, Quaternion.identity);
 			placedMarker.name = marker.title;
@@ -310,23 +298,20 @@
 			trigger.setMarkerObj (marker);
 		}
 
-		//Get the height of the given point by casting ray downwards
+		// Get the height of the given point by casting ray downwards.
 		double getHeightAtTile (Vector3 position)
 		{
 			RaycastHit hit;
 			float distance = 100f;
-			//Shoot ray from 50 points above the ground level - assumption is that buildings will not be more that 50 units
+			// Shoot ray from 50 points above the ground level - assumption is that buildings will not be more that 50 units.
 			position.y = 50;
-
 			double height = 0;
-
 			Vector3 targetLocation;
 
 			if (Physics.Raycast (position, Vector3.down, out hit, distance)) {
 				targetLocation = hit.point;
 				height = hit.point.y;
 			}
-
 			return height;
 		}
 	}

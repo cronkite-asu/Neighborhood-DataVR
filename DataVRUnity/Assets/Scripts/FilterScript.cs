@@ -1,11 +1,10 @@
 ﻿namespace edu.asu.cronkite.datavr
 {
-	using System.Collections;
-	using System.Collections.Generic;
 	using UnityEngine;
 	using UnityEngine.UI;
-	using UnityEngine.SceneManagement;
+	using System.Collections;
 	using System.Collections.Generic;
+	using UnityEngine.SceneManagement;
 
 	public class FilterScript : MonoBehaviour
 	{
@@ -17,7 +16,7 @@
 		[SerializeField] Text loadingText;
 		[SerializeField] GameObject filterCanvas;
 
-		// the actual percentage while scene is fully loaded
+		// The actual percentage while scene is fully loaded.
 		private const float LOAD_READY_PERCENTAGE = 0.9f;
 
 		public void addCheckBoxesForTypes(SortedDictionary<string, bool> filterDict)
@@ -46,35 +45,26 @@
 		public void filterButtonClicked()
 		{
 			Configuration.filterSelection ();
-			//SceneManager.LoadScene ("MapScene", LoadSceneMode.Single);
-			//sceneAO = SceneManager.LoadSceneAsync("MapScene");
 			ChangeScene ("MapScene");
-
 		}
 
 		IEnumerator LoadingSceneRealProgress(string sceneName) {
 			yield return new WaitForSeconds(1);
 			sceneAO = SceneManager.LoadSceneAsync(sceneName);
 
-			// disable scene activation while loading to prevent auto load
+			// Disable scene activation while loading to prevent auto load.
 			sceneAO.allowSceneActivation = false;
 
 			while (!sceneAO.isDone) {
 				loadingProgbar.value = sceneAO.progress;
 				Debug.Log ("Progress " + sceneAO.progress);
 				if ((sceneAO.progress ) >= LOAD_READY_PERCENTAGE) {
-					//loadingProgbar.value = 1f;
-					//loadingText.text = "PRESS SPACE TO CONTINUE";
-					//if (Input.GetKeyDown(KeyCode.Space)) {
-						sceneAO.allowSceneActivation = true;
-					//}
+					sceneAO.allowSceneActivation = true;
 				}
 				Debug.Log(sceneAO.progress);
 				yield return null;
 			}
-			//sceneAO.allowSceneActivation = true;
 		}
-
 
 		public void ChangeScene(string sceneName){
 			filterCanvas.SetActive (false);
@@ -87,5 +77,4 @@
 			StartCoroutine(LoadingSceneRealProgress(sceneName));
 		}
 	}
-
 }

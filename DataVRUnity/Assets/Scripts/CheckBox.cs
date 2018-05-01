@@ -1,11 +1,9 @@
 ﻿namespace edu.asu.cronkite.datavr
 {
-	using System.Collections;
-	using System.Collections.Generic;
-	using UnityEngine;
-	using UnityEngine.UI;
+    using UnityEngine;
+    using UnityEngine.UI;
 
-	public class CheckBox : MonoBehaviour
+    public class CheckBox : MonoBehaviour
 	{
 		public Text textField;
 		public Toggle toogle;

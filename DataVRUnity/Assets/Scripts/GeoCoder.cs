@@ -3,30 +3,25 @@ using System.Net.Security;
 
 namespace edu.asu.cronkite.datavr
 {
-	using System.Collections;
-	using System.Collections.Generic;
-	using UnityEngine;
-	using System.Net;
-	using System.IO;
-	using System.Text;
-	using System;
-	using UnityEngine.Networking;
+    using UnityEngine;
+    using System.Net;
+    using System.IO;
+    using System.Text;
+    using System;
 
-	public class GeoCoder : MonoBehaviour
+    public class GeoCoder : MonoBehaviour
 	{
 
 		protected string baseUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=";
 		protected string key = "&key=";
-
 		public string API_KEY;
-
 		public GeoCoder (String apiKey)
 		{
 			this.API_KEY = apiKey;
 		}
 
-		// Make call to the google location api and get the lat long associated with the address
-		// Location object contains the latitude and longitude information of the palce
+		// Make call to the google location api and get the lat long associated with the address.
+		// Location object contains the latitude and longitude information of the palce.
 		public Location GetGeoLocationFromAddress (string address)
 		{
 			Location loc = null;
@@ -38,8 +33,6 @@ namespace edu.asu.cronkite.datavr
 				loc = result.results [0].geometry.location; 
 			return loc;
 		}
-
-
 
 		string GET (string url)
 		{
@@ -58,15 +51,13 @@ namespace edu.asu.cronkite.datavr
 				using (Stream responseStream = errorResponse.GetResponseStream ()) {
 					StreamReader reader = new StreamReader (responseStream, Encoding.GetEncoding ("utf-8"));
 					string errorText = reader.ReadToEnd ();
-					// log errorText
 					Debug.Log ("Exception in getting the geo coding for the url " + url);
 				}
 				throw;
 			}
 		}
 
-
-		// Method for validating the certificate of the web request
+		// Method for validating the certificate of the web request.
 		public bool MyRemoteCertificateValidationCallback (System.Object sender,
 		                                                   X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
 		{
