@@ -1,4 +1,4 @@
-# DataVR
+# Neighborhood DataVR
 Unity asset for visualizing geo spatial data in Virtual Reality.
 
 ## Components Involved:
@@ -23,6 +23,7 @@ Once the API keys are obtained, they can be configured in the asset.
 Open FilterScene from `Assets->Scenes->FilterScene`
 
 Click on the GameObject named `Configuration` and in the Inspector panel under Scripts sections, you will find the text box named `Google Maps Api Key` and provide the Google Geo Location API Key here.
+![Screenshot](Images/FilterSceneConfig.png "Filter Scene Configuration")
 
 For adding mapbox API key, Choose `Mapbox->Configure` and provide the mapbox API key in the access token field and save it.
 
