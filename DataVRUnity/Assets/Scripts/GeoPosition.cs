@@ -119,7 +119,7 @@
 
 		void Start ()
 		{
-			Debug.Log ("DATAVR App: Start called...");		
+			// Debug.Log ("DATAVR App: Start called...");		
 			statDefaultMarker = Configuration.statDefaultMarker;
 			maxBuildingHeight = Configuration.sMarkerHeight;
 			markerTagging = Configuration.markerTagging;
@@ -192,7 +192,7 @@
 		// Method for reading data from the file when raw file is imported instead of TestAsset
 		private void readDataFile ()
 		{
-			Debug.Log ("Reading data from file...");
+			// Debug.Log ("Reading data from file...");
 
 			string filename = ""; // Provide the file name here to read raw file
 			string androidFilePath = System.IO.Path.Combine (Application.streamingAssetsPath, filename);
@@ -261,7 +261,7 @@
 					maxBuildingHeight = height;
 				}
 			}
-			Debug.Log ("Maximum height so far  = " + maxBuildingHeight);
+			// Debug.Log ("Maximum height so far  = " + maxBuildingHeight);
 		}
 
 		/// <summary>

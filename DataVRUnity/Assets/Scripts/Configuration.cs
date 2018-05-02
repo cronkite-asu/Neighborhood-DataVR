@@ -147,7 +147,7 @@
 
 		void populateMarkerList (List<List<string>> csvList)
 		{
-			Debug.Log ("DATAVR : populate Marker List called...");
+			// Debug.Log ("DATAVR : populate Marker List called...");
 			markerList = new List<MarkerObject> ();
 
 			foreach (List<string> colList in csvList) {
@@ -167,7 +167,7 @@
 					markerList.Add (marker);
 				}
 			}
-			Debug.Log ("DATAVR: Populate marker list completed...");
+			// Debug.Log ("DATAVR: Populate marker list completed...");
 		}
 	}
 }

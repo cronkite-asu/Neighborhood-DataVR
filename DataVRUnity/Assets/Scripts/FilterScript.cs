@@ -57,11 +57,11 @@
 
 			while (!sceneAO.isDone) {
 				loadingProgbar.value = sceneAO.progress;
-				Debug.Log ("Progress " + sceneAO.progress);
+				// Debug.Log ("Progress " + sceneAO.progress);
 				if ((sceneAO.progress ) >= LOAD_READY_PERCENTAGE) {
 					sceneAO.allowSceneActivation = true;
 				}
-				Debug.Log(sceneAO.progress);
+				// Debug.Log(sceneAO.progress);
 				yield return null;
 			}
 		}
@@ -71,7 +71,7 @@
 			GameObject canvas = GameObject.Find("Arrows");
 			canvas.SetActive (false);
 			loadingUI.SetActive(true);
-			Debug.Log ("ChangeScene() method called..");
+			// Debug.Log ("ChangeScene() method called..");
 			loadingText.text = "LOADING...";
 
 			StartCoroutine(LoadingSceneRealProgress(sceneName));

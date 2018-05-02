@@ -104,7 +104,6 @@
 		private void ShowGazeTimer (bool show)
 		{
 			GameObject obj = GameObject.FindGameObjectWithTag ("MainCamera");
-			//GameObject obj = GameObject.Find("Player");
 			if (obj != null) {
 				GameObject timerCanvas = obj.transform.Find ("TimerGaze").gameObject;
 
@@ -112,11 +111,7 @@
 				if (show) {
 					timerCanvas.SetActive (true);
 				} else {
-	
-					//GameObject rpb = GameObject.Find ("RadialProgressBar");
-					//RPB script = rpb.GetComponent<RPB> ();
 					RadialProgressBar.Reset ();
-
 					//Hide the timer when the recticle pointer is moved out of marker object
 					timerCanvas.SetActive (false);
 				}
