@@ -46,12 +46,12 @@ namespace edu.asu.cronkite.datavr
 					return reader.ReadToEnd ();
 				}
 			} catch (WebException ex) {
-				Debug.Log ("Web exception" + ex.ToString ());
+				// Debug.Log ("Web exception" + ex.ToString ());
 				WebResponse errorResponse = ex.Response;
 				using (Stream responseStream = errorResponse.GetResponseStream ()) {
 					StreamReader reader = new StreamReader (responseStream, Encoding.GetEncoding ("utf-8"));
 					string errorText = reader.ReadToEnd ();
-					Debug.Log ("Exception in getting the geo coding for the url " + url);
+					// Debug.Log ("Exception in getting the geo coding for the url " + url);
 				}
 				throw;
 			}

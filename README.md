@@ -1,6 +1,8 @@
 # Neighborhood DataVR
 Unity asset for visualizing geo spatial data in Virtual Reality.
 
+This tool brings localized, neighborhood data visualization into Unity. Content creators can easily create a 3D visualization of neighborhood-based data, such as local schools’ test scores or teacher-student ratios, in a mapped scene. 
+
 ## Components Involved:
 
 - MapBox Unity SDK 1.2.0
@@ -31,7 +33,7 @@ Geolocation data (preferably in .csv file) should be provided in the Data Field 
 Drag and drop the file in the `Data File` field of the `Configuration` GameObject's inspector.
 
 Next load MapScene from `Assets->Scenes->MapScene` and configure the initial location of data in the Map GameObject.
-![alt text](Images/MapSceneConfig.png "MapScene Configuration")
+![Screenshot](Images/MapSceneConfig.png "MapScene Configuration")
 
 #### Configuration parameters
 

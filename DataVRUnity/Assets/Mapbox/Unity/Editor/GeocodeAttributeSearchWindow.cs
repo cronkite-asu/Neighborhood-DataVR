@@ -1,10 +1,11 @@
 ﻿namespace Mapbox.Editor
 {
-    using UnityEngine;
-    using UnityEditor;
-    using System.Collections.Generic;
-    using Mapbox.Geocoding;
-    using Mapbox.Unity;
+	using UnityEngine;
+	using UnityEditor;
+	using System.Collections.Generic;
+	using Mapbox.Geocoding;
+	using Mapbox.Unity;
+	using System.Globalization;
 
 	public class GeocodeAttributeSearchWindow : EditorWindow
 	{
@@ -27,12 +28,12 @@
 		void OnEnable()
 		{
 			_resource = new ForwardGeocodeResource("");
-			EditorApplication.playmodeStateChanged += OnModeChanged;
+			EditorApplication.playModeStateChanged += OnModeChanged;
 		}
 
 		void OnDisable()
 		{
-			EditorApplication.playmodeStateChanged -= OnModeChanged;
+			EditorApplication.playModeStateChanged -= OnModeChanged;
 		}
 
 		bool hasSetFocus = false;
@@ -49,7 +50,7 @@
 			window.position = new Rect(mousePos.x - width, mousePos.y, width, height);
 		}
 
-		void OnModeChanged()
+		void OnModeChanged(PlayModeStateChange state)
 		{
 			Close();
 		}
@@ -59,10 +60,10 @@
 			GUILayout.Label("Search for a location");
 
 			string oldSearchInput = _searchInput;
-			
+
 			GUI.SetNextControlName(searchFieldName);
 			_searchInput = GUILayout.TextField(_searchInput);
-			
+
 			if (_searchInput.Length == 0)
 			{
 				GUILayout.Label("Type in a location to find it's latitude and longtitude");
@@ -70,8 +71,8 @@
 			else
 			{
 				bool changed = oldSearchInput != _searchInput;
-				if(changed)
-				{ 
+				if (changed)
+				{
 					HandleUserInput(_searchInput);
 				}
 
@@ -81,7 +82,8 @@
 					for (int i = 0; i < _features.Count; i++)
 					{
 						Feature feature = _features[i];
-						string coordinates = feature.Center.x + ", " + feature.Center.y;
+						string coordinates = feature.Center.x.ToString(CultureInfo.InvariantCulture) + ", " +
+						                     feature.Center.y.ToString(CultureInfo.InvariantCulture);
 						string buttonContent = feature.Address + " (" + coordinates + ")";
 
 						if (GUILayout.Button(buttonContent))
@@ -103,7 +105,7 @@
 						GUILayout.Label("No search results");
 				}
 			}
-			
+
 			if (!hasSetFocus)
 			{
 				GUI.FocusControl(searchFieldName);
@@ -119,13 +121,16 @@
 			if (!string.IsNullOrEmpty(searchString))
 			{
 				_resource.Query = searchString;
-                MapboxAccess.Instance.Geocoder.Geocode(_resource, HandleGeocoderResponse);
+				MapboxAccess.Instance.Geocoder.Geocode(_resource, HandleGeocoderResponse);
 			}
 		}
 
 		void HandleGeocoderResponse(ForwardGeocodeResponse res)
 		{
-			_features = res.Features;
+			if (res != null)
+			{
+				_features = res.Features;
+			}
 			_isSearching = false;
 			this.Repaint();
 
