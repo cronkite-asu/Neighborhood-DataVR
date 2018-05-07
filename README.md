@@ -3,7 +3,8 @@ Unity asset for visualizing geo spatial data in Virtual Reality.
 
 This tool brings localized, neighborhood data visualization into Unity. Content creators can easily create a 3D visualization of neighborhood-based data, such as local schools’ test scores or teacher-student ratios, in a mapped scene.
 
-Take a look at this video below for a quick demo. 
+Take a look at this video below for a quick demo.
+
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/WcU7pMOTTTU/hqdefault.jpg)](https://www.youtube.com/watch?v=WcU7pMOTTTU)
 
 ## Components Involved:
