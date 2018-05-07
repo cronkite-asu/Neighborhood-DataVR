@@ -45,7 +45,7 @@
 			float ratio = distFromStart / vecDist;
 			float x = ((1 - ratio) * start.x) + (ratio * end.x);
 			float y = ((1 - ratio) * start.y) + (ratio * end.y);
-			return new Vector2 (x, y);	
+			return new Vector2 (x, y);
 		}
 
 		/// <summary>
@@ -97,17 +97,17 @@
 		void Start ()
 		{
 			//Set the text with proper information
-			MarkerObject marker = GeoPosition.selectedObject;
-			GameObject markerText = GameObject.Find ("MarkerInfoDetails");
-			Text text = markerText.GetComponent<Text> ();
-			//text.text = text.text + marker.address;	
+			//MarkerObject marker = GeoPosition.selectedObject;
+			//GameObject markerText = GameObject.Find ("MarkerInfoDetails");
+			//Text text = markerText.GetComponent<Text> ();
+			//text.text = text.text + marker.address;
 		}
 
 		//Method with action to perfom on closing the popup dialog
 		//Hide the pop up dialog shown for the displaying marker information.
 		public void closeButtonClicked ()
 		{
-			GameObject infoCanvas = GameObject.Find ("InfoCanvas"); 
+			GameObject infoCanvas = GameObject.Find ("InfoCanvas");
 			infoCanvas.SetActive (false);
 		}
 	}

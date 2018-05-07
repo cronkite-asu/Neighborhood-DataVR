@@ -53,14 +53,14 @@
 			foreach (string sline in array) {
 				List<string> colList = CsvReader.csvColumnSplitProcessor (sline);
 				csvList.Add (colList);
-			}			
+			}
 
 			return csvList;
 		}
 
 		/*private List<List<string>> readTextAsset()
 		{
-			String readContents = textFile.text;	
+			String readContents = textFile.text;
 			char[] splitChars = { '\n' };
 			string[] array = readContents.Split (splitChars);
 
@@ -69,7 +69,7 @@
 			foreach (string sline in array) {
 				List<string> colList = CsvReader.csvColumnSplitProcessor (sline);
 				csvList.Add (colList);
-			}			
+			}
 
 			return csvList;
 		}
@@ -87,7 +87,7 @@
 			}
 
 			string result = System.Text.Encoding.UTF8.GetString (reader.bytes);
-		
+
 			char[] splitChars = { '\n' };
 			string[] array = result.Split (splitChars);
 
@@ -96,7 +96,7 @@
 			foreach (string sline in array) {
 				List<string> colList = CsvReader.csvColumnSplitProcessor (sline);
 				csvList.Add (colList);
-			}			
+			}
 
 			return csvList;
 		}
@@ -114,12 +114,12 @@
 			}
 			return null;
 		}
-			
+
 		*/
 
 		void Start ()
 		{
-			// Debug.Log ("DATAVR App: Start called...");		
+			// Debug.Log ("DATAVR App: Start called...");
 			statDefaultMarker = Configuration.statDefaultMarker;
 			maxBuildingHeight = Configuration.sMarkerHeight;
 			markerTagging = Configuration.markerTagging;
@@ -150,7 +150,7 @@
 		{
 			counter = count;
 		}
-			
+
 		// Return whether the run method can be called or not.
 		public bool canRun ()
 		{
@@ -179,7 +179,7 @@
 
 			case RuntimePlatform.Android:
 			case RuntimePlatform.IPhonePlayer:
-				
+
 				filename = System.IO.Path.Combine (Application.streamingAssetsPath, fileName);
 				break;
 			default:
@@ -188,7 +188,7 @@
 			}
 			return filename;
 		}
-			
+
 		// Method for reading data from the file when raw file is imported instead of TestAsset
 		private void readDataFile ()
 		{
@@ -197,7 +197,6 @@
 			string filename = ""; // Provide the file name here to read raw file
 			string androidFilePath = System.IO.Path.Combine (Application.streamingAssetsPath, filename);
 
-			GeoCoder coder = new GeoCoder (Configuration.getGoogleMapsApiKey ());
 			markerList = new List<MarkerObject> ();
 
 			using (CsvReader reader = new CsvReader (androidFilePath)) {
@@ -215,7 +214,7 @@
 							type = DEFAULT_MARKER;
 						}
 						if (address != null && address.Length > 2) {
-						
+
 							MarkerObject marker = new MarkerObject (address, title, type, telephone, url);
 							markerList.Add (marker);
 						}
@@ -223,12 +222,12 @@
 				}
 			}
 		}
-			
+
 
 		// Method which fetches populates the lat long fields of the list of marker objects.
 		void fetchGeoLocation (List<MarkerObject> markerList)
 		{
-			GeoCoder coder = new GeoCoder (Configuration.getGoogleMapsApiKey ());	
+			GeoCoder coder = new GeoCoder (Configuration.getGoogleMapsApiKey ());
 			foreach (MarkerObject marker in  markerList) {
 
 				Location location = coder.GetGeoLocationFromAddress (marker.address);

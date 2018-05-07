@@ -15,7 +15,6 @@
 		private float currentAmount;
 		/*[SerializeField]*/
 		private float speed;
-		private float GazeTime = 0f;
 		public float GazeTimeLimit;
 
 		public void Start ()

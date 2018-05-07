@@ -30,7 +30,7 @@ namespace edu.asu.cronkite.datavr
 
 			RootObject result = JsonUtility.FromJson<RootObject> (jsonResponse);
 			if (result.results.Count > 0)
-				loc = result.results [0].geometry.location; 
+				loc = result.results [0].geometry.location;
 			return loc;
 		}
 
@@ -46,13 +46,7 @@ namespace edu.asu.cronkite.datavr
 					return reader.ReadToEnd ();
 				}
 			} catch (WebException ex) {
-				// Debug.Log ("Web exception" + ex.ToString ());
 				WebResponse errorResponse = ex.Response;
-				using (Stream responseStream = errorResponse.GetResponseStream ()) {
-					StreamReader reader = new StreamReader (responseStream, Encoding.GetEncoding ("utf-8"));
-					string errorText = reader.ReadToEnd ();
-					// Debug.Log ("Exception in getting the geo coding for the url " + url);
-				}
 				throw;
 			}
 		}
