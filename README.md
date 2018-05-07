@@ -27,14 +27,6 @@ Open FilterScene from `Assets->Scenes->FilterScene`
 Click on the GameObject named `Configuration` and in the Inspector panel under Scripts sections, you will find the text box named `Google Maps Api Key` and provide the Google Geo Location API Key here.
 ![Screenshot](Images/FilterSceneConfig.png "Filter Scene Configuration")
 
-For adding mapbox API key, Choose `Mapbox->Configure` and provide the mapbox API key in the access token field and save it.
-
-Geolocation data (preferably in .csv file) should be provided in the Data Field as mentioned below.
-Drag and drop the file in the `Data File` field of the `Configuration` GameObject's inspector.
-
-Next load MapScene from `Assets->Scenes->MapScene` and configure the initial location of data in the Map GameObject.
-![Screenshot](Images/MapSceneConfig.png "MapScene Configuration")
-
 #### Configuration parameters
 
 `Default Marker` - Field where the default marker's icon object should be placed.
@@ -43,8 +35,15 @@ Next load MapScene from `Assets->Scenes->MapScene` and configure the initial loc
 
 `Gaze Time` - Maximum time that user should gaze so that click action is performed on the marker object.
 
-`Data File` - Field where the CSV data file should be dragged and dropped.
-              Code expects the CSV file to have the columns in the following order - Title, Type, Address, Contact Number, Website information. 
+`Data File` - Field where the CSV data file should be dragged and dropped. Code expects the CSV file to have the columns in the following order - Title, Type, Address, Contact Number, Website information.
+
+For adding mapbox API key, Choose `Mapbox->Configure` and provide the mapbox API key in the access token field and save it.
+
+Geolocation data (preferably in .csv file) should be provided in the Data Field as mentioned below.
+Drag and drop the file in the `Data File` field of the `Configuration` GameObject's inspector.
+
+Next load MapScene from `Assets->Scenes->MapScene` and configure the initial location of data in the Map GameObject.
+![Screenshot](Images/MapSceneConfig.png "MapScene Configuration")
 
 #### For changing markers displayed:
 
