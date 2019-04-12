@@ -30,17 +30,13 @@ namespace edu.asu.cronkite.datavr
 			Location loc = null;
 			String url = baseUrl +"?key="+API_KEY+"&address=" + address;
 			if(latLongRegex.Match(address).Success){
-				Debug.Log("A latlong value is present in data file instead of the address!");
 				string[] split_array = address.Split(',');
 				loc.setLatitude(Convert.ToDouble(split_array[0]));
 				loc.setLongitude(Convert.ToDouble(split_array[1]));
 				return loc;
 			} else{
-				Debug.Log("Response URL:"+url);
 				string jsonResponse = GET (url);
-
 				RootObject result = JsonUtility.FromJson<RootObject> (jsonResponse);
-				Debug.Log("Result Count:"+result.results.Count);
 				if (result.results.Count > 0)
 					loc = result.results [0].geometry.location;
 				return loc;

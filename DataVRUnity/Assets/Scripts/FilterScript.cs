@@ -45,7 +45,6 @@
 		public void filterButtonClicked()
 		{
 			Configuration.filterSelection();
-			Debug.Log ("Button has been clikced!");
 			ChangeScene ("MapScene");
 		}
 
