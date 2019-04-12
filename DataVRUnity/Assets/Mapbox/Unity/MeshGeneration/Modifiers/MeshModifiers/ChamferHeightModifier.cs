@@ -3,6 +3,7 @@ namespace Mapbox.Unity.MeshGeneration.Modifiers
 	using System.Collections.Generic;
 	using UnityEngine;
 	using Mapbox.Unity.MeshGeneration.Data;
+	using System;
 
 	[CreateAssetMenu(menuName = "Mapbox/Modifiers/Smooth Height for Buildings Modifier")]
 	public class ChamferHeightModifier : MeshModifier
@@ -33,7 +34,7 @@ namespace Mapbox.Unity.MeshGeneration.Modifiers
 
 			if (!_forceHeight)
 			{
-				GetHeightData(feature, ref minHeight, ref hf);
+				GetHeightData(feature, tile.TileScale, ref minHeight, ref hf);
 			}
 
 			var max = md.Vertices[0].y;
@@ -62,12 +63,13 @@ namespace Mapbox.Unity.MeshGeneration.Modifiers
 
 			float d = 0f;
 			Vector3 v1;
-			Vector3 v2 = Vector3.zero;
+			Vector3 v2 = Mapbox.Unity.Constants.Math.Vector3Zero;
 			int ind = 0;
 
 			var wallTri = new List<int>();
 			var wallUv = new List<Vector2>();
 			meshData.Vertices.Add(new Vector3(meshData.Vertices[originalVertexCount - 1].x, meshData.Vertices[originalVertexCount - 1].y - hf, meshData.Vertices[originalVertexCount - 1].z));
+			meshData.Tangents.Add(meshData.Tangents[originalVertexCount - 1]);
 			wallUv.Add(new Vector2(0, -hf));
 			meshData.Normals.Add(meshData.Normals[originalVertexCount - 1]);
 
@@ -85,6 +87,11 @@ namespace Mapbox.Unity.MeshGeneration.Modifiers
 				meshData.Normals.Add(meshData.Normals[meshData.Edges[i + 1]]);
 				meshData.Normals.Add(meshData.Normals[meshData.Edges[i]]);
 				meshData.Normals.Add(meshData.Normals[meshData.Edges[i + 1]]);
+
+				meshData.Tangents.Add(v2 - v1.normalized);
+				meshData.Tangents.Add(v2 - v1.normalized);
+				meshData.Tangents.Add(v2 - v1.normalized);
+				meshData.Tangents.Add(v2 - v1.normalized);
 
 				d = (v2 - v1).magnitude;
 
@@ -122,24 +129,23 @@ namespace Mapbox.Unity.MeshGeneration.Modifiers
 			hf += max - min;
 		}
 
-		private static void GetHeightData(VectorFeatureUnity feature, ref float minHeight, ref float hf)
+		private static void GetHeightData(VectorFeatureUnity feature, float scale, ref float minHeight, ref float hf)
 		{
 			if (feature.Properties.ContainsKey("height"))
 			{
-				if (float.TryParse(feature.Properties["height"].ToString(), out hf))
+				hf = Convert.ToSingle(feature.Properties["height"]);
+				hf *= scale;
+				if (feature.Properties.ContainsKey("min_height"))
 				{
-					if (feature.Properties.ContainsKey("min_height"))
-					{
-						minHeight = float.Parse(feature.Properties["min_height"].ToString());
-						hf -= minHeight;
-					}
+					minHeight = Convert.ToSingle(feature.Properties["min_height"]) * scale;
+					hf -= minHeight;
 				}
+
 			}
 			if (feature.Properties.ContainsKey("ele"))
 			{
-				if (float.TryParse(feature.Properties["ele"].ToString(), out hf))
-				{
-				}
+				hf = Convert.ToSingle(feature.Properties["ele"]);
+				hf *= scale;
 			}
 		}
 
@@ -152,6 +158,7 @@ namespace Mapbox.Unity.MeshGeneration.Modifiers
 			List<Vector2> newUV = new List<Vector2>();
 			md.Normals.Clear();
 			md.Edges.Clear();
+			md.Tangents.Clear();
 
 			for (int t = 0; t < md.Triangles[0].Count; t++)
 			{
@@ -180,6 +187,11 @@ namespace Mapbox.Unity.MeshGeneration.Modifiers
 						md.Normals.Add(md.Normals[cst]);
 						md.Normals.Add(md.Normals[cst + 1]);
 						md.Normals.Add(md.Normals[cst + 2]);
+
+						md.Tangents.Add(md.Tangents[cst]);
+						md.Tangents.Add(md.Tangents[cst + 1]);
+						md.Tangents.Add(md.Tangents[cst + 2]);
+
 						continue;
 					}
 
@@ -234,12 +246,17 @@ namespace Mapbox.Unity.MeshGeneration.Modifiers
 					}
 
 					newVertices.Add(new Vector3(poi.x, poi.y + _offset + md.Vertices[current].y, poi.z));
-
 					newVertices.Add(md.Vertices[current] + v1);
 					newVertices.Add(md.Vertices[current] - v2);
+
 					md.Normals.Add(Constants.Math.Vector3Up);
 					md.Normals.Add(-n1);
 					md.Normals.Add(-n2);
+
+					md.Tangents.Add(v1 - v2);
+					md.Tangents.Add(v1 - v2);
+					md.Tangents.Add(v1 - v2);
+
 					newUV.Add(md.UV[0][current]);
 					newUV.Add(md.UV[0][current]);
 					newUV.Add(md.UV[0][current]);

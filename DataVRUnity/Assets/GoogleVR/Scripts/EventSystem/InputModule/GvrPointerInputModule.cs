@@ -1,3 +1,5 @@
+//-----------------------------------------------------------------------
+// <copyright file="GvrPointerInputModule.cs" company="Google Inc.">
 // Copyright 2016 Google Inc. All rights reserved.
 //
 // Licensed under the MIT License, you may not use this file except in
@@ -10,10 +12,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+
+using Gvr.Internal;
 
 /// This script provides an implemention of Unity's `BaseInputModule` class, so
 /// that Canvas-based (_uGUI_) UI elements and 3D scene objects can be
@@ -47,172 +53,229 @@ using UnityEngine.EventSystems;
 ///   - Set the parent of GvrReticlePointer to the main camera.
 ///
 [AddComponentMenu("GoogleVR/GvrPointerInputModule")]
-public class GvrPointerInputModule : BaseInputModule, IGvrInputModuleController {
-  /// Determines whether Pointer input is active in VR Mode only (`true`), or all of the
-  /// time (`false`).  Set to false if you plan to use direct screen taps or other
-  /// input when not in VR Mode.
-  [Tooltip("Whether Pointer input is active in VR Mode only (true), or all the time (false).")]
-  public bool vrModeOnly = false;
+[HelpURL("https://developers.google.com/vr/unity/reference/class/GvrPointerInputModule")]
+public class GvrPointerInputModule : BaseInputModule, IGvrInputModuleController
+{
+    /// Determines whether Pointer input is active in VR Mode only (`true`), or all of the
+    /// time (`false`).  Set to false if you plan to use direct screen taps or other
+    /// input when not in VR Mode.
+    [Tooltip("Whether Pointer input is active in VR Mode only (true), or all the time (false).")]
+    public bool vrModeOnly = false;
 
-  [Tooltip("Manages scroll events for the input module.")]
-  public GvrPointerScrollInput scrollInput = new GvrPointerScrollInput();
+    /// <summary>Manages scroll events for the input module.</summary>
+    [Tooltip("Manages scroll events for the input module.")]
+    public GvrPointerScrollInput scrollInput = new GvrPointerScrollInput();
 
-  public GvrPointerInputModuleImpl Impl { get; private set; }
+    /// <summary>The implementation object of this module.</summary>
+    public GvrPointerInputModuleImpl Impl { get; private set; }
 
-  public GvrEventExecutor EventExecutor { get; private set; }
+    /// <summary>The executor this module uses to process events.</summary>
+    public GvrEventExecutor EventExecutor { get; private set; }
 
-  public new EventSystem eventSystem {
-    get {
-      return base.eventSystem;
-    }
-  }
-
-  public List<RaycastResult> RaycastResultCache {
-    get {
-      return m_RaycastResultCache;
-    }
-  }
-
-  public static GvrBasePointer Pointer {
-    get {
-      GvrPointerInputModule module = FindInputModule();
-      if (module == null || module.Impl == null) {
-        return null;
-      }
-
-      return module.Impl.Pointer;
-    }
-    set {
-      GvrPointerInputModule module = FindInputModule();
-      if (module == null || module.Impl == null) {
-        return;
-      }
-
-      module.Impl.Pointer = value;
-    }
-  }
-
-  /// GvrBasePointer calls this when it is created.
-  /// If a pointer hasn't already been assigned, it
-  /// will assign the newly created one by default.
-  ///
-  /// This simplifies the common case of having only one
-  /// GvrBasePointer so is can be automatically hooked up
-  /// to the manager.  If multiple GvrBasePointers are in
-  /// the scene, the app has to take responsibility for
-  /// setting which one is active.
-  public static void OnPointerCreated(GvrBasePointer createdPointer) {
-    GvrPointerInputModule module = FindInputModule();
-    if (module == null || module.Impl == null) {
-      return;
+    /// <summary>The event system reference.</summary>
+    public new EventSystem eventSystem
+    {
+        get
+        {
+            return base.eventSystem;
+        }
     }
 
-    if (module.Impl.Pointer == null) {
-      module.Impl.Pointer = createdPointer;
-    }
-  }
-
-  /// Helper function to find the Event Executor that is part of
-  /// the input module if one exists in the scene.
-  public static GvrEventExecutor FindEventExecutor() {
-    GvrPointerInputModule gvrInputModule = FindInputModule();
-    if (gvrInputModule == null) {
-      return null;
+    /// <summary>List of raycast results used as a cache.</summary>
+    public List<RaycastResult> RaycastResultCache
+    {
+        get
+        {
+            return m_RaycastResultCache;
+        }
     }
 
-    return gvrInputModule.EventExecutor;
-  }
+    /// <summary>Static access to the GvrBasePointer.</summary>
+    public static GvrBasePointer Pointer
+    {
+        get
+        {
+            GvrPointerInputModule module = FindInputModule();
+            if (module == null || module.Impl == null)
+            {
+                return null;
+            }
 
-  /// Helper function to find the input module if one exists in the
-  /// scene and it is the active module.
-  public static GvrPointerInputModule FindInputModule() {
-    if (EventSystem.current == null) {
-      return null;
+            return module.Impl.Pointer;
+        }
+
+        set
+        {
+            GvrPointerInputModule module = FindInputModule();
+            if (module == null || module.Impl == null)
+            {
+                return;
+            }
+
+            module.Impl.Pointer = value;
+        }
     }
 
-    EventSystem eventSystem = EventSystem.current;
-    if (eventSystem == null) {
-      return null;
+    /// GvrBasePointer calls this when it is created.
+    /// If a pointer hasn't already been assigned, it
+    /// will assign the newly created one by default.
+    ///
+    /// This simplifies the common case of having only one
+    /// GvrBasePointer so is can be automatically hooked up
+    /// to the manager.  If multiple GvrBasePointers are in
+    /// the scene, the app has to take responsibility for
+    /// setting which one is active.
+    public static void OnPointerCreated(GvrBasePointer createdPointer)
+    {
+        GvrPointerInputModule module = FindInputModule();
+        if (module == null || module.Impl == null)
+        {
+            return;
+        }
+
+        if (module.Impl.Pointer == null)
+        {
+            module.Impl.Pointer = createdPointer;
+        }
     }
 
-    GvrPointerInputModule gvrInputModule =
-      eventSystem.GetComponent<GvrPointerInputModule>();
+    /// Helper function to find the Event Executor that is part of
+    /// the input module if one exists in the scene.
+    public static GvrEventExecutor FindEventExecutor()
+    {
+        GvrPointerInputModule gvrInputModule = FindInputModule();
+        if (gvrInputModule == null)
+        {
+            return null;
+        }
 
-    return gvrInputModule;
-  }
-
-  /// Convenience function to access what the current RaycastResult.
-  public static RaycastResult CurrentRaycastResult {
-    get {
-      GvrPointerInputModule inputModule = GvrPointerInputModule.FindInputModule();
-      if (inputModule == null) {
-        return new RaycastResult();
-      }
-
-      if (inputModule.Impl == null) {
-        return new RaycastResult();
-      }
-
-      if (inputModule.Impl.CurrentEventData == null) {
-        return new RaycastResult();
-      }
-
-      return inputModule.Impl.CurrentEventData.pointerCurrentRaycast;
-    }
-  }
-
-  public override bool ShouldActivateModule() {
-    return Impl.ShouldActivateModule();
-  }
-
-  public override void DeactivateModule() {
-    Impl.DeactivateModule();
-  }
-
-  public override bool IsPointerOverGameObject(int pointerId) {
-    return Impl.IsPointerOverGameObject(pointerId);
-  }
-
-  public override void Process() {
-    UpdateImplProperties();
-    Impl.Process();
-  }
-
-  protected override void Awake() {
-    base.Awake();
-    Impl = new GvrPointerInputModuleImpl();
-    EventExecutor = new GvrEventExecutor();
-    UpdateImplProperties();
-  }
-
-  public bool ShouldActivate() {
-    return base.ShouldActivateModule();
-  }
-
-  public void Deactivate() {
-    base.DeactivateModule();
-  }
-
-  public new GameObject FindCommonRoot(GameObject g1, GameObject g2) {
-    return BaseInputModule.FindCommonRoot(g1, g2);
-  }
-
-  public new BaseEventData GetBaseEventData() {
-    return base.GetBaseEventData();
-  }
-
-  public new RaycastResult FindFirstRaycast(List<RaycastResult> candidates) {
-    return BaseInputModule.FindFirstRaycast(candidates);
-  }
-
-  private void UpdateImplProperties() {
-    if (Impl == null) {
-      return;
+        return gvrInputModule.EventExecutor;
     }
 
-    Impl.ScrollInput = scrollInput;
-    Impl.VrModeOnly = vrModeOnly;
-    Impl.ModuleController = this;
-    Impl.EventExecutor = EventExecutor;
-  }
+    /// Helper function to find the input module if one exists in the
+    /// scene and it is the active module.
+    public static GvrPointerInputModule FindInputModule()
+    {
+        if (EventSystem.current == null)
+        {
+            return null;
+        }
+
+        EventSystem eventSystem = EventSystem.current;
+        if (eventSystem == null)
+        {
+            return null;
+        }
+
+        GvrPointerInputModule gvrInputModule =
+            eventSystem.GetComponent<GvrPointerInputModule>();
+
+        return gvrInputModule;
+    }
+
+    /// Convenience function to access what the current RaycastResult.
+    public static RaycastResult CurrentRaycastResult
+    {
+        get
+        {
+            GvrPointerInputModule inputModule = GvrPointerInputModule.FindInputModule();
+            if (inputModule == null)
+            {
+                return new RaycastResult();
+            }
+
+            if (inputModule.Impl == null)
+            {
+                return new RaycastResult();
+            }
+
+            if (inputModule.Impl.CurrentEventData == null)
+            {
+                return new RaycastResult();
+            }
+
+            return inputModule.Impl.CurrentEventData.pointerCurrentRaycast;
+        }
+    }
+
+    /// <summary>Returns true if the module should be activated.</summary>
+    [SuppressMemoryAllocationError(IsWarning = true, Reason = "Pending documentation.")]
+    public override bool ShouldActivateModule()
+    {
+        return Impl.ShouldActivateModule();
+    }
+
+    /// <summary>Deactivates this input module.</summary>
+    [SuppressMemoryAllocationError(IsWarning = true, Reason = "Pending documentation.")]
+    public override void DeactivateModule()
+    {
+        Impl.DeactivateModule();
+    }
+
+    /// <summary>Returns true if the pointer is over a game object.</summary>
+    /// <param name="pointerId">The pointer id to check.</param>
+    public override bool IsPointerOverGameObject(int pointerId)
+    {
+        return Impl.IsPointerOverGameObject(pointerId);
+    }
+
+    /// <summary>Processes input events.</summary>
+    [SuppressMemoryAllocationError(IsWarning = true, Reason = "Pending documentation.")]
+    public override void Process()
+    {
+        UpdateImplProperties();
+        Impl.Process();
+    }
+
+    /// @cond
+    protected override void Awake()
+    {
+        base.Awake();
+        Impl = new GvrPointerInputModuleImpl();
+        EventExecutor = new GvrEventExecutor();
+        UpdateImplProperties();
+    }
+
+    /// @endcond
+
+    [SuppressMemoryAllocationError(IsWarning = true, Reason = "Pending documentation.")]
+    public bool ShouldActivate()
+    {
+        return base.ShouldActivateModule();
+    }
+
+    public void Deactivate()
+    {
+        base.DeactivateModule();
+    }
+
+    [SuppressMemoryAllocationError(IsWarning = true, Reason = "Pending documentation.")]
+    public new GameObject FindCommonRoot(GameObject g1, GameObject g2)
+    {
+        return BaseInputModule.FindCommonRoot(g1, g2);
+    }
+
+    [SuppressMemoryAllocationError(IsWarning = true, Reason = "Pending documentation.")]
+    public new BaseEventData GetBaseEventData()
+    {
+        return base.GetBaseEventData();
+    }
+
+    public new RaycastResult FindFirstRaycast(List<RaycastResult> candidates)
+    {
+        return BaseInputModule.FindFirstRaycast(candidates);
+    }
+
+    private void UpdateImplProperties()
+    {
+        if (Impl == null)
+        {
+            return;
+        }
+
+        Impl.ScrollInput = scrollInput;
+        Impl.VrModeOnly = vrModeOnly;
+        Impl.ModuleController = this;
+        Impl.EventExecutor = EventExecutor;
+    }
 }

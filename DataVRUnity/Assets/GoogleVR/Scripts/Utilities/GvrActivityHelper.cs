@@ -1,3 +1,5 @@
+//-----------------------------------------------------------------------
+// <copyright file="GvrActivityHelper.cs" company="Google Inc.">
 // Copyright 2017 Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,44 +13,60 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using UnityEngine;
 
-// Simple static class to abstract out several jni calls that need to be shared
-// between different classes.
-public static class GvrActivityHelper {
+/// <summary>Simple static class to abstract out several JNI calls that need to be shared
+/// between different classes.</summary>
+public static class GvrActivityHelper
+{
+    /// @cond
 #if UNITY_IOS
-  public const string GVR_DLL_NAME = "__Internal";
+    public const string GVR_DLL_NAME = "__Internal";
 #else
-  public const string GVR_DLL_NAME = "gvr";
-#endif  // UNITY_IOS
-  public const string PACKAGE_UNITY_PLAYER = "com.unity3d.player.UnityPlayer";
+    public const string GVR_DLL_NAME = "gvr";
+    public const string GVR_SHIM_DLL_NAME = "gvrshim";
+#endif // UNITY_IOS
+    /// @endcond
+
+    /// <summary>Package name for the Android Unity player class.</summary>
+    public const string PACKAGE_UNITY_PLAYER = "com.unity3d.player.UnityPlayer";
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-  /// Returns the Android Activity used by the Unity device player. The caller is
-  /// responsible for memory-managing the returned AndroidJavaObject.
-  public static AndroidJavaObject GetActivity() {
-    AndroidJavaClass jc = new AndroidJavaClass(PACKAGE_UNITY_PLAYER);
-    if (jc == null) {
-      Debug.LogErrorFormat("Failed to get class {0}", PACKAGE_UNITY_PLAYER);
-      return null;
-    }
-    AndroidJavaObject activity = jc.GetStatic<AndroidJavaObject>("currentActivity");
-    if (activity == null) {
-      Debug.LogError("Failed to obtain current Android activity.");
-      return null;
-    }
-    return activity;
-  }
+    /// Returns the Android Activity used by the Unity device player. The caller is
+    /// responsible for memory-managing the returned AndroidJavaObject.
+    public static AndroidJavaObject GetActivity()
+    {
+        AndroidJavaClass jc = new AndroidJavaClass(PACKAGE_UNITY_PLAYER);
+        if (jc == null)
+        {
+            Debug.LogErrorFormat("Failed to get class {0}", PACKAGE_UNITY_PLAYER);
+            return null;
+        }
 
-  /// Returns the application context of the current Android Activity.
-  public static AndroidJavaObject GetApplicationContext(AndroidJavaObject activity) {
-    AndroidJavaObject context = activity.Call<AndroidJavaObject>("getApplicationContext");
-    if (context == null) {
-      Debug.LogError("Failed to get application context from Activity.");
-      return null;
+        AndroidJavaObject activity = jc.GetStatic<AndroidJavaObject>("currentActivity");
+        if (activity == null)
+        {
+            Debug.LogError("Failed to obtain current Android activity.");
+            return null;
+        }
+
+        return activity;
     }
-    return context;
-  }
-#endif  // UNITY_ANDROID && !UNITY_EDITOR
+
+    /// Returns the application context of the current Android Activity.
+    public static AndroidJavaObject GetApplicationContext(AndroidJavaObject activity)
+    {
+        AndroidJavaObject context = activity.Call<AndroidJavaObject>("getApplicationContext");
+        if (context == null)
+        {
+            Debug.LogError("Failed to get application context from Activity.");
+            return null;
+        }
+
+        return context;
+    }
+#endif // UNITY_ANDROID && !UNITY_EDITOR
 }

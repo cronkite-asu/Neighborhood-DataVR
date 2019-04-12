@@ -1,5 +1,6 @@
 ﻿namespace Mapbox.Unity.Map
 {
+	using System.Collections;
 	using Mapbox.Unity.Location;
 	using UnityEngine;
 
@@ -9,17 +10,24 @@
 		AbstractMap _map;
 
 		ILocationProvider _locationProvider;
-
-		void Start()
+    
+		private void Awake()
 		{
-			_locationProvider = LocationProviderFactory.Instance.DefaultLocationProvider;
-			_locationProvider.OnLocationUpdated += LocationProvider_OnLocationUpdated;
+			// Prevent double initialization of the map. 
+			_map.InitializeOnStart = false;
 		}
 
-		void LocationProvider_OnLocationUpdated(object sender, Location.LocationUpdatedEventArgs e)
+		protected virtual IEnumerator Start()
+		{
+			yield return null;
+			_locationProvider = LocationProviderFactory.Instance.DefaultLocationProvider;
+			_locationProvider.OnLocationUpdated += LocationProvider_OnLocationUpdated; ;
+		}
+
+		void LocationProvider_OnLocationUpdated(Unity.Location.Location location)
 		{
 			_locationProvider.OnLocationUpdated -= LocationProvider_OnLocationUpdated;
-			_map.Initialize(e.Location, _map.Zoom);
+			_map.Initialize(location.LatitudeLongitude, _map.AbsoluteZoom);
 		}
 	}
 }

@@ -1,3 +1,5 @@
+//-----------------------------------------------------------------------
+// <copyright file="GvrEditorMenu.cs" company="Google Inc.">
 // Copyright 2015 Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,39 +13,47 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using UnityEngine;
 using UnityEditor;
 
-public class GvrEditorMenu {
-  [MenuItem("GoogleVR/Documentation/Developers Site", false, 100)]
-  private static void OpenDocumentation() {
-    Application.OpenURL("https://developers.google.com/vr");
-  }
+public class GvrEditorMenu
+{
+    [MenuItem("GoogleVR/Documentation/Developers Site", false, 100)]
+    private static void OpenDocumentation()
+    {
+        Application.OpenURL("https://developers.google.com/vr");
+    }
 
-  [MenuItem("GoogleVR/Documentation/Unity Guide", false, 100)]
-  private static void OpenUnityGuide() {
-    Application.OpenURL("https://developers.google.com/vr/unity/guide");
-  }
+    [MenuItem("GoogleVR/Documentation/Unity Guide", false, 100)]
+    private static void OpenUnityGuide()
+    {
+        Application.OpenURL("https://developers.google.com/vr/unity/guide");
+    }
 
-  [MenuItem("GoogleVR/Documentation/Release Notes", false, 100)]
-  private static void OpenReleaseNotes() {
-    Application.OpenURL("https://developers.google.com/vr/unity/release-notes");
-  }
+    [MenuItem("GoogleVR/Documentation/Release Notes", false, 100)]
+    private static void OpenReleaseNotes()
+    {
+        Application.OpenURL("https://developers.google.com/vr/unity/release-notes");
+    }
 
-  [MenuItem("GoogleVR/Documentation/Known Issues", false, 100)]
-  private static void OpenKnownIssues() {
-    Application.OpenURL("https://developers.google.com/vr/unity/release-notes#known_issues");
-  }
+    [MenuItem("GoogleVR/Documentation/Known Issues", false, 100)]
+    private static void OpenKnownIssues()
+    {
+        Application.OpenURL("https://developers.google.com/vr/unity/release-notes#known_issues");
+    }
 
-  [MenuItem("GoogleVR/Editor Settings", false, 100)]
-  private static void OpenEditorSettings() {
-    EditorWindow.GetWindow(typeof(GvrEditorSettings));
-  }
+    [MenuItem("GoogleVR/Editor Settings", false, 100)]
+    private static void OpenEditorSettings()
+    {
+        EditorWindow.GetWindow(typeof(GvrEditorSettings));
+    }
 
-  [MenuItem("GoogleVR/Report Bug", false, 100)]
-  private static void OpenReportBug() {
-    Application.OpenURL("https://github.com/googlesamples/cardboard-unity/issues");
-  }
-
+    [MenuItem("GoogleVR/Report Bug", false, 100)]
+    private static void OpenReportBug()
+    {
+        Application.OpenURL("https://github.com/googlesamples/cardboard-unity/issues");
+    }
 }

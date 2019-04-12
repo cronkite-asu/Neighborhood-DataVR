@@ -99,6 +99,7 @@
 				statDefaultMarker = defaultMarker;
 				sMarkerHeight = markerHeight;
 				gazeTimeLimit = gazeTime;
+				googleMapKey = googleMapsApiKey;
 
 				filterDict = new SortedDictionary<string, bool> ();
 				List<List<string>> csvList = getData ();

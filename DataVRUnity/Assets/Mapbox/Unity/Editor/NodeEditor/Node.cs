@@ -8,6 +8,8 @@ using System.Collections;
 using Mapbox.Unity.MeshGeneration.Modifiers;
 using System.Linq;
 using Mapbox.Unity.MeshGeneration.Interfaces;
+using Mapbox.Unity.Map;
+using Mapbox.Unity.Utilities;
 
 namespace Mapbox.Editor.NodeEditor
 {
@@ -25,7 +27,7 @@ namespace Mapbox.Editor.NodeEditor
 		public List<ConnectionPoint> ConnectionPoints;
 		public List<Node> Children;
 
-		public ScriptableObject ScriptableObject;
+		public object ScriptableObject;
 		public Rect spaceRect;
 		public Rect rect;
 		public Rect buttonRect;
@@ -57,7 +59,7 @@ namespace Mapbox.Editor.NodeEditor
 		private float _inbuff;
 
 		//Vector2 position, float width, float height
-		public Node(ScriptableObject so = null)
+		public Node(object so = null)
 		{
 			_propTopTest = 0f;
 			_propCount = 0;
@@ -68,13 +70,23 @@ namespace Mapbox.Editor.NodeEditor
 
 			if (ScriptableObject != null)
 			{
-				title = Regex.Replace(ScriptableObject.name, "(\\B[A-Z])", " $1");
-				subtitle = Regex.Replace(ScriptableObject.GetType().Name, "(\\B[A-Z])", " $1");
+				if (ScriptableObject is ModifierBase)
+				{
+					title = Regex.Replace(((ModifierBase)ScriptableObject).name, "(\\B[A-Z])", " $1");
+					subtitle = Regex.Replace(ScriptableObject.GetType().Name, "(\\B[A-Z])", " $1");
+				}
+				else
+				{
+					//title = Regex.Replace(ScriptableObject., "(\\B[A-Z])", " $1");
+					title = Regex.Replace(ScriptableObject.GetType().Name, "(\\B[A-Z])", " $1");
+				}
 			}
 
 			var inlabel = "";
-			if (ScriptableObject is LayerVisualizerBase)
-				inlabel = (ScriptableObject as VectorLayerVisualizer).Key;
+			if (ScriptableObject is VectorSubLayerProperties)
+				inlabel = (ScriptableObject as VectorSubLayerProperties).coreOptions.sublayerName;
+			if (ScriptableObject is PrefabItemOptions)
+				inlabel = (ScriptableObject as PrefabItemOptions).coreOptions.sublayerName;
 			inPoint = new ConnectionPoint(this, inlabel, "", 20, ConnectionPointType.In, NodeBasedEditor.inPointStyle);
 		}
 
@@ -101,10 +113,22 @@ namespace Mapbox.Editor.NodeEditor
 				}
 			}
 
-			var so = ScriptableObject as VectorLayerVisualizer;
+			var so = ScriptableObject as VectorSubLayerProperties;
 			if (so != null)
 			{
-				inPoint.inLabel = so.Key;
+				inPoint.inLabel = so.coreOptions.sublayerName;
+				inPoint.Draw();
+			}
+			else
+			{
+				if (!_isRoot)
+					inPoint.Draw();
+			}
+
+			var prefabItemObj = ScriptableObject as PrefabItemOptions;
+			if (prefabItemObj != null)
+			{
+				inPoint.inLabel = prefabItemObj.coreOptions.sublayerName;
 				inPoint.Draw();
 			}
 			else
@@ -157,8 +181,6 @@ namespace Mapbox.Editor.NodeEditor
 					}
 				}
 			}
-
-
 			return spaceRect.height;
 		}
 
@@ -172,7 +194,16 @@ namespace Mapbox.Editor.NodeEditor
 						if (rect.Contains(e.mousePosition))
 						{
 							if (!isDragged)
-								Selection.objects = new UnityEngine.Object[1] { ScriptableObject };
+							{
+								if (ScriptableObject is ModifierBase)
+								{
+									Selection.objects = new UnityEngine.Object[1] { (ModifierBase)ScriptableObject };
+								}
+								if (ScriptableObject is AbstractMap)
+								{
+									Selection.objects = new UnityEngine.Object[1] { ((AbstractMap)ScriptableObject).gameObject };
+								}
+							}
 							isDragged = true;
 							GUI.changed = true;
 							isSelected = true;
@@ -248,9 +279,13 @@ namespace Mapbox.Editor.NodeEditor
 			foreach (FieldInfo fi in obj.GetType().GetFields().Where(prop => prop.IsDefined(typeof(NodeEditorElementAttribute), false)))
 			{
 				//field SO
-				if (typeof(ScriptableObject).IsAssignableFrom(fi.FieldType))
+#if ENABLE_WINMD_SUPPORT
+				if (typeof(ILayer).GetTypeInfo().IsAssignableFrom(fi.FieldType.GetTypeInfo()))
+#else
+				if (typeof(ILayer).IsAssignableFrom(fi.FieldType))
+#endif
 				{
-					var val = fi.GetValue(obj) as ScriptableObject;
+					var val = fi.GetValue(obj) as ILayer;
 					if (val != null)
 					{
 						var name = (fi.GetCustomAttributes(typeof(NodeEditorElementAttribute), true)[0] as NodeEditorElementAttribute).Name;
@@ -270,7 +305,62 @@ namespace Mapbox.Editor.NodeEditor
 				if (type.IsGenericType && type.GetGenericTypeDefinition()
 						== typeof(List<>))
 				{
-					if (typeof(ScriptableObject).IsAssignableFrom(type.GetGenericArguments()[0]))
+					if (typeof(LayerProperties).IsAssignableFrom(type.GetGenericArguments()[0]))
+					{
+						if (typeof(VectorSubLayerProperties).IsAssignableFrom(type.GetGenericArguments()[0]))
+						{
+							var val = fi.GetValue(obj);
+							if (val is List<VectorSubLayerProperties>)
+							{
+								foreach (VectorSubLayerProperties listitem in val as IEnumerable)
+								{
+									//var prop = new SerializedObject(listitem);
+									var cc = new ConnectionPoint(this, "", listitem.coreOptions.sublayerName, _headerHeight + _propertyHeight * _propCount, ConnectionPointType.Out, NodeBasedEditor.outPointStyle, listitem);
+
+									ConnectionPoints.Add(cc);
+									_propCount++;
+									var newNode = new Node(listitem);
+									Children.Add(newNode);
+									newNode.Connections.Add(new Connection(newNode.inPoint, cc));
+									newNode.Dive(listitem, showModifiers, depth + 1);
+								}
+							}
+							else if (val is List<PrefabItemOptions>)
+							{
+								foreach (PrefabItemOptions listitem in val as IEnumerable)
+								{
+									//var prop = new SerializedObject(listitem);
+									var cc = new ConnectionPoint(this, "", listitem.coreOptions.sublayerName, _headerHeight + _propertyHeight * _propCount, ConnectionPointType.Out, NodeBasedEditor.outPointStyle, listitem);
+
+									ConnectionPoints.Add(cc);
+									_propCount++;
+									var newNode = new Node(listitem);
+									Children.Add(newNode);
+									newNode.Connections.Add(new Connection(newNode.inPoint, cc));
+									newNode.Dive(listitem, showModifiers, depth + 1);
+								}
+							}
+						}
+						else
+						{
+							var name = (fi.GetCustomAttributes(typeof(NodeEditorElementAttribute), true)[0] as NodeEditorElementAttribute).Name;
+							var conp = new ConnectionPoint(this, "", name, _headerHeight + _propertyHeight * _propCount, ConnectionPointType.Out, NodeBasedEditor.outPointStyle);
+							ConnectionPoints.Add(conp);
+							var val = fi.GetValue(obj);
+							if (val is IEnumerable)
+							{
+								foreach (ScriptableObject listitem in val as IEnumerable)
+								{
+									var newNode = new Node(listitem);
+									Children.Add(newNode);
+									newNode.Connections.Add(new Connection(newNode.inPoint, conp));
+									newNode.Dive(listitem, showModifiers, depth + 1);
+								}
+								_propCount++;
+							}
+						}
+					}
+					else
 					{
 						var name = (fi.GetCustomAttributes(typeof(NodeEditorElementAttribute), true)[0] as NodeEditorElementAttribute).Name;
 						var conp = new ConnectionPoint(this, "", name, _headerHeight + _propertyHeight * _propCount, ConnectionPointType.Out, NodeBasedEditor.outPointStyle);
@@ -278,7 +368,7 @@ namespace Mapbox.Editor.NodeEditor
 						var val = fi.GetValue(obj);
 						if (val is IEnumerable)
 						{
-							foreach (ScriptableObject listitem in val as IEnumerable)
+							foreach (ModifierBase listitem in val as IEnumerable)
 							{
 								var newNode = new Node(listitem);
 								Children.Add(newNode);
@@ -288,36 +378,51 @@ namespace Mapbox.Editor.NodeEditor
 							_propCount++;
 						}
 					}
-					else 
+				}
+
+				if (typeof(ScriptableObject).IsAssignableFrom(fi.FieldType))
+				{
+					var val = fi.GetValue(obj) as ModifierBase;
+					if (val != null)
 					{
-						var val = fi.GetValue(obj);
-						if (val is List<TypeVisualizerTuple>)
-						{
-							foreach (TypeVisualizerTuple listitem in val as IEnumerable)
-							{
-								//var name = (fi.GetCustomAttributes(typeof(NodeEditorElementAttribute), true)[0] as NodeEditorElementAttribute).Name;
-								var cc = new ConnectionPoint(this, "", listitem.Type, _headerHeight + _propertyHeight * _propCount, ConnectionPointType.Out, NodeBasedEditor.outPointStyle);
-								ConnectionPoints.Add(cc);
-								_propCount++;
-								var newNode = new Node(listitem.Stack);
-								Children.Add(newNode);
-								newNode.Connections.Add(new Connection(newNode.inPoint, cc));
-								newNode.Dive(listitem.Stack, showModifiers, depth + 1);
-							}
-						}
+						var name = (fi.GetCustomAttributes(typeof(NodeEditorElementAttribute), true)[0] as NodeEditorElementAttribute).Name;
+						var conp = new ConnectionPoint(this, "", name, _headerHeight + _propertyHeight * _propCount, ConnectionPointType.Out, NodeBasedEditor.outPointStyle);
+						ConnectionPoints.Add(conp);
+						var newNode = new Node(val);
+						Children.Add(newNode);
+						newNode.Connections.Add(new Connection(newNode.inPoint, conp));
+
+						newNode.Dive(val, showModifiers, depth + 1);
+						_propCount++;
 					}
 				}
+
 			}
 
 			foreach (PropertyInfo pi in obj.GetType().GetProperties().Where(prop => prop.IsDefined(typeof(NodeEditorElementAttribute), false)))
 			{
 				//property SO
-				if (typeof(ScriptableObject).IsAssignableFrom(pi.PropertyType))
+				if (typeof(LayerProperties).IsAssignableFrom(pi.PropertyType))
 				{
-					var val = pi.GetValue(obj, null) as ScriptableObject;
+					var val = pi.GetValue(obj, null) as LayerProperties;
 					if (val != null)
 					{
+						var name = (pi.GetCustomAttributes(typeof(NodeEditorElementAttribute), true)[0] as NodeEditorElementAttribute).Name;
+						var conp = new ConnectionPoint(this, "", name, _headerHeight + _propertyHeight * _propCount, ConnectionPointType.Out, NodeBasedEditor.outPointStyle);
+						ConnectionPoints.Add(conp);
+						var newNode = new Node(val);
+						Children.Add(newNode);
+						newNode.Connections.Add(new Connection(newNode.inPoint, conp));
+						newNode.Dive(val, showModifiers, depth + 1);
+						_propCount++;
+					}
+				}
 
+				if (typeof(ILayer).IsAssignableFrom(pi.PropertyType))
+				{
+					var val = pi.GetValue(obj, null) as ILayer;
+					if (val != null)
+					{
 						var name = (pi.GetCustomAttributes(typeof(NodeEditorElementAttribute), true)[0] as NodeEditorElementAttribute).Name;
 						var conp = new ConnectionPoint(this, "", name, _headerHeight + _propertyHeight * _propCount, ConnectionPointType.Out, NodeBasedEditor.outPointStyle);
 						ConnectionPoints.Add(conp);
@@ -334,7 +439,7 @@ namespace Mapbox.Editor.NodeEditor
 				if (type.IsGenericType && type.GetGenericTypeDefinition()
 						== typeof(List<>))
 				{
-					if (typeof(ScriptableObject).IsAssignableFrom(type.GetGenericArguments()[0]))
+					if (typeof(LayerProperties).IsAssignableFrom(type.GetGenericArguments()[0]))
 					{
 						var val = pi.GetValue(obj, null);
 
@@ -343,7 +448,8 @@ namespace Mapbox.Editor.NodeEditor
 						ConnectionPoints.Add(conp);
 						if (val is IEnumerable)
 						{
-							foreach (ScriptableObject listitem in val as IEnumerable)
+
+							foreach (LayerProperties listitem in val as IEnumerable)
 							{
 								var newNode = new Node(listitem);
 								Children.Add(newNode);

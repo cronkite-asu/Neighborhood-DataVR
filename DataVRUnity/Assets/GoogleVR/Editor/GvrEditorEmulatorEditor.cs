@@ -1,4 +1,6 @@
-﻿// Copyright 2017 Google Inc. All rights reserved.
+//-----------------------------------------------------------------------
+// <copyright file="GvrEditorEmulatorEditor.cs" company="Google Inc.">
+// Copyright 2017 Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,6 +13,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using UnityEngine;
 using UnityEditor;
@@ -18,23 +22,26 @@ using UnityEditor;
 /// A custom editor for the GvrEditorEmulator script.
 /// It adds an info panel describing the camera controls.
 [CustomEditor(typeof(GvrEditorEmulator)), CanEditMultipleObjects]
-public class GvrEditorEmulatorEditor : Editor {
-  private float infoHeight;
+public class GvrEditorEmulatorEditor : Editor
+{
+    private float infoHeight;
 
-  private const string INFO_TEXT = "Camera Controls:\n" +
-                                   "   • Alt + Move Mouse = Change Yaw/Pitch\n" +
-                                   "   • Ctrl + Move Mouse = Change Roll";
+    private const string INFO_TEXT = "Camera Controls:\n" +
+                                     "   • Alt + Move Mouse = Change Yaw/Pitch\n" +
+                                     "   • Ctrl + Move Mouse = Change Roll";
 
-  private const int NUM_INFO_LINES = 3;
+    private const int NUM_INFO_LINES = 3;
 
-  void OnEnable() {
-    infoHeight = GvrInfoDrawer.GetHeightForLines(NUM_INFO_LINES);
-  }
+    void OnEnable()
+    {
+        infoHeight = GvrInfoDrawer.GetHeightForLines(NUM_INFO_LINES);
+    }
 
-  public override void OnInspectorGUI() {
-    DrawDefaultInspector();
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector();
 
-    Rect rect = EditorGUILayout.GetControlRect(false, infoHeight);
-    GvrInfoDrawer.Draw(rect, INFO_TEXT);
-  }
+        Rect rect = EditorGUILayout.GetControlRect(false, infoHeight);
+        GvrInfoDrawer.Draw(rect, INFO_TEXT, MessageType.None);
+    }
 }

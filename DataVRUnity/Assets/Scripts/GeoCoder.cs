@@ -7,17 +7,20 @@ namespace edu.asu.cronkite.datavr
     using System.Net;
     using System.IO;
     using System.Text;
+	using System.Text.RegularExpressions;
     using System;
 
     public class GeoCoder : MonoBehaviour
 	{
 
-		protected string baseUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=";
-		protected string key = "&key=";
+		protected string baseUrl = "https://maps.googleapis.com/maps/api/geocode/json";
 		public string API_KEY;
+		private Regex latLongRegex;
+	
 		public GeoCoder (String apiKey)
 		{
 			this.API_KEY = apiKey;
+			latLongRegex = new Regex(@"/^[+-]?\d+(\.\d+)?,[+-]?\d+(\.\d+)?$/");
 		}
 
 		// Make call to the google location api and get the lat long associated with the address.
@@ -25,13 +28,23 @@ namespace edu.asu.cronkite.datavr
 		public Location GetGeoLocationFromAddress (string address)
 		{
 			Location loc = null;
-			string url = baseUrl + address + key + API_KEY;
-			string jsonResponse = GET (url);
+			String url = baseUrl +"?key="+API_KEY+"&address=" + address;
+			if(latLongRegex.Match(address).Success){
+				Debug.Log("A latlong value is present in data file instead of the address!");
+				string[] split_array = address.Split(',');
+				loc.setLatitude(Convert.ToDouble(split_array[0]));
+				loc.setLongitude(Convert.ToDouble(split_array[1]));
+				return loc;
+			} else{
+				Debug.Log("Response URL:"+url);
+				string jsonResponse = GET (url);
 
-			RootObject result = JsonUtility.FromJson<RootObject> (jsonResponse);
-			if (result.results.Count > 0)
-				loc = result.results [0].geometry.location;
-			return loc;
+				RootObject result = JsonUtility.FromJson<RootObject> (jsonResponse);
+				Debug.Log("Result Count:"+result.results.Count);
+				if (result.results.Count > 0)
+					loc = result.results [0].geometry.location;
+				return loc;
+			}
 		}
 
 		string GET (string url)

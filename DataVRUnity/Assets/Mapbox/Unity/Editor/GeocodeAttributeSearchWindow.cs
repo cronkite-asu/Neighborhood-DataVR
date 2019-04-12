@@ -2,14 +2,20 @@
 {
 	using UnityEngine;
 	using UnityEditor;
+	using System;
 	using System.Collections.Generic;
 	using Mapbox.Geocoding;
 	using Mapbox.Unity;
 	using System.Globalization;
+	using Mapbox.Unity.Map;
+	using Mapbox.Editor;
 
 	public class GeocodeAttributeSearchWindow : EditorWindow
 	{
-		SerializedProperty _property;
+		SerializedProperty _coordinateProperty;
+		object _objectToUpdate;
+
+		private bool _updateAbstractMap;
 
 		string _searchInput = "";
 
@@ -38,11 +44,15 @@
 
 		bool hasSetFocus = false;
 
-		public static void Open(SerializedProperty property)
+		public static void Open(SerializedProperty property, object objectToUpdate = null)
 		{
 			GeocodeAttributeSearchWindow window = EditorWindow.GetWindow<GeocodeAttributeSearchWindow>(true, "Search for location");
 
-			window._property = property;
+			window._coordinateProperty = property;
+			if (objectToUpdate != null)
+			{
+				window._objectToUpdate = objectToUpdate;
+			}
 
 			Event e = Event.current;
 			Vector2 mousePos = GUIUtility.GUIToScreenPoint(e.mousePosition);
@@ -83,16 +93,47 @@
 					{
 						Feature feature = _features[i];
 						string coordinates = feature.Center.x.ToString(CultureInfo.InvariantCulture) + ", " +
-						                     feature.Center.y.ToString(CultureInfo.InvariantCulture);
-						string buttonContent = feature.Address + " (" + coordinates + ")";
+						                            feature.Center.y.ToString(CultureInfo.InvariantCulture);
+
+						//abreviated coords for display in the UI
+						string truncatedCoordinates = feature.Center.x.ToString("F2", CultureInfo.InvariantCulture) + ", " +
+							feature.Center.y.ToString("F2", CultureInfo.InvariantCulture);
+
+						//split feature name and add elements until the maxButtonContentLenght is exceeded
+						string[] featureNameSplit = feature.PlaceName.Split(',');
+						string buttonContent = "";
+						int maxButtonContentLength = 30;
+						for (int j = 0; j < featureNameSplit.Length; j++)
+						{
+							if(buttonContent.Length + featureNameSplit[j].Length < maxButtonContentLength)
+							{
+								if(String.IsNullOrEmpty(buttonContent))
+								{
+									buttonContent = featureNameSplit[j];
+								}
+								else
+								{
+									buttonContent = buttonContent + "," + featureNameSplit[j];
+								}
+							}
+						}
+
+						if (buttonContent.Length < maxButtonContentLength + 15)
+						{
+							buttonContent = buttonContent + "," + " (" + truncatedCoordinates + ")";
+						}
+
 
 						if (GUILayout.Button(buttonContent))
 						{
-							_property.stringValue = coordinates;
+							_coordinateProperty.stringValue = coordinates;
+							_coordinateProperty.serializedObject.ApplyModifiedProperties();
+							EditorUtility.SetDirty(_coordinateProperty.serializedObject.targetObject);
 
-							_property.serializedObject.ApplyModifiedProperties();
-							EditorUtility.SetDirty(_property.serializedObject.targetObject);
-
+							if(_objectToUpdate != null)
+							{
+								EditorHelper.CheckForModifiedProperty(_coordinateProperty, _objectToUpdate, true);
+							}
 							Close();
 						}
 					}
@@ -127,9 +168,14 @@
 
 		void HandleGeocoderResponse(ForwardGeocodeResponse res)
 		{
+			//null if no internet connection
 			if (res != null)
 			{
-				_features = res.Features;
+				//null if invalid token
+				if (res.Features != null)
+				{
+					_features = res.Features;
+				}
 			}
 			_isSearching = false;
 			this.Repaint();

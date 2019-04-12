@@ -1,6 +1,8 @@
-﻿// Copyright 2017 Google Inc. All rights reserved.
+//-----------------------------------------------------------------------
+// <copyright file="PermissionsDemoBuildProcessor.cs" company="Google Inc.">
+// Copyright 2017 Google Inc. All rights reserved.
 //
-// Licensed under the Apache License, Version 2.0(the "License");
+// Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
@@ -9,8 +11,10 @@
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissioßns and
+// See the License for the specific language governing permissions and
 // limitations under the License.
+// </copyright>
+//-----------------------------------------------------------------------
 
 // Only invoke custom build processor when building for Android.
 #if UNITY_ANDROID
@@ -21,7 +25,15 @@ namespace GoogleVR.Demos
     using UnityEditor.Build;
     using UnityEditorInternal.VR;
 
+#if UNITY_2018_1_OR_NEWER
+    using UnityEditor.Build.Reporting;
+#endif
+
+#if UNITY_2018_1_OR_NEWER
+    class PermissionsDemoBuildProcessor : IPreprocessBuildWithReport, IPostprocessBuildWithReport
+#else
     class PermissionsDemoBuildProcessor : IPreprocessBuild, IPostprocessBuild
+#endif
     {
         private const string SCENE_NAME_PERMISSIONS_DEMO = "PermissionsDemo";
 
@@ -31,6 +43,13 @@ namespace GoogleVR.Demos
         {
             get { return 0; }
         }
+
+#if UNITY_2018_1_OR_NEWER
+        public void OnPreprocessBuild(BuildReport report)
+        {
+            OnPreprocessBuild(report.summary.platform, report.summary.outputPath);
+        }
+#endif
 
         // OnPreprocessBuild() is called right before the build process begins. If it
         // detects that the first enabled scene in the build arrays is the PermissionsDemo,
@@ -85,7 +104,7 @@ namespace GoogleVR.Demos
                 return;
             }
 
-            string[] androidVrSDKsAppended = new string[androidVrSDKs.Length+1];
+            string[] androidVrSDKsAppended = new string[androidVrSDKs.Length + 1];
 
             for (int i = 0; i < androidVrSDKs.Length; i++)
             {
@@ -103,12 +122,21 @@ namespace GoogleVR.Demos
             m_cardboardAddedFromCode = true;
         }
 
+#if UNITY_2018_1_OR_NEWER
+        public void OnPostprocessBuild(BuildReport report)
+        {
+            OnPostprocessBuild(report.summary.platform, report.summary.outputPath);
+        }
+#endif
+
         // OnPostprocessBuild() is called after the build process. It does appropriate cleanup
         // so that this script only affects build process for PermissionsDemo, not others.
         public void OnPostprocessBuild(BuildTarget target, string path)
         {
             if (!m_cardboardAddedFromCode)
+            {
                 return;
+            }
 
             string[] androidVrSDKs = VREditor.GetVREnabledDevicesOnTargetGroup(BuildTargetGroup.Android);
 

@@ -6,6 +6,8 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 	using Mapbox.Unity.MeshGeneration.Enums;
 	using Mapbox.Unity.MeshGeneration.Data;
 	using Mapbox.Unity.Utilities;
+	using Mapbox.Unity.Map;
+	using System.Collections.Generic;
 
 	public enum MapImageType
 	{
@@ -21,89 +23,144 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 	public class MapImageFactory : AbstractTileFactory
 	{
 		[SerializeField]
-		private MapImageType _mapIdType;
+		ImageryLayerProperties _properties;
+		protected ImageDataFetcher DataFetcher;
 
-		[SerializeField]
-		[StyleSearch]
-		Style _customStyle;
-
-		[SerializeField]
-		private string _mapId = "";
-
-		[SerializeField]
-		bool _useCompression = true;
-
-		[SerializeField]
-		bool _useMipMap = false;
-
-		[SerializeField]
-		bool _useRetina;
+		public ImageryLayerProperties Properties
+		{
+			get
+			{
+				return _properties;
+			}
+		}
 
 		public string MapId
 		{
 			get
 			{
-				return _mapId;
+				return _properties.sourceOptions.Id;
 			}
 
 			set
 			{
-				_mapId = value;
+				_properties.sourceOptions.Id = value;
 			}
 		}
 
-		// TODO: come back to this
-		//public override void Update()
-		//{
-		//    base.Update();
-		//    foreach (var tile in _tiles.Values)
-		//    {
-		//        Run(tile);
-		//    }
-		//}
-
-		internal override void OnInitialized()
+		#region UnityMethods
+		protected virtual void OnDestroy()
 		{
+			//unregister events
+			if (DataFetcher != null)
+			{
+				DataFetcher.DataRecieved -= OnImageRecieved;
+				DataFetcher.FetchingError -= OnDataError;
+			}
+		}
+		#endregion
 
+		#region DataFetcherEvents
+		private void OnImageRecieved(UnityTile tile, RasterTile rasterTile)
+		{
+			if (tile != null)
+			{
+				if (tile.RasterDataState != TilePropertyState.Unregistered)
+				{
+					_tilesWaitingResponse.Remove(tile);
+					tile.SetRasterData(rasterTile.Data, _properties.rasterOptions.useMipMap, _properties.rasterOptions.useCompression);
+				}
+			}
 		}
 
-		internal override void OnRegistered(UnityTile tile)
+		//merge this with OnErrorOccurred?
+		protected virtual void OnDataError(UnityTile tile, RasterTile rasterTile, TileErrorEventArgs e)
 		{
-			if (_mapIdType == MapImageType.None)
-				return;
-
-			RasterTile rasterTile;
-			if (_mapId.StartsWith("mapbox://", StringComparison.Ordinal))
+			if (tile != null)
 			{
-				rasterTile = _useRetina ? new RetinaRasterTile() : new RasterTile();
+				if (tile.RasterDataState != TilePropertyState.Unregistered)
+				{
+					tile.RasterDataState = TilePropertyState.Error;
+					_tilesWaitingResponse.Remove(tile);
+					OnErrorOccurred(e);
+				}
+
+			}
+		}
+		#endregion
+
+		#region AbstractFactoryOverrides
+		protected override void OnInitialized()
+		{
+			DataFetcher = ScriptableObject.CreateInstance<ImageDataFetcher>();
+			DataFetcher.DataRecieved += OnImageRecieved;
+			DataFetcher.FetchingError += OnDataError;
+		}
+
+		public override void SetOptions(LayerProperties options)
+		{
+			_properties = (ImageryLayerProperties)options;
+		}
+
+		protected override void OnRegistered(UnityTile tile)
+		{
+			if (_properties.sourceType == ImagerySourceType.None)
+			{
+				tile.SetRasterData(null);
+				tile.RasterDataState = TilePropertyState.None;
+				return;
 			}
 			else
 			{
-				rasterTile = _useRetina ? new ClassicRetinaRasterTile() : new ClassicRasterTile();
-			}
-
-			tile.RasterDataState = TilePropertyState.Loading;
-
-			tile.AddTile(rasterTile);
-			Progress++;
-			rasterTile.Initialize(_fileSource, tile.CanonicalTileId, _mapId, () =>
-			{
-				if (rasterTile.HasError)
+				tile.RasterDataState = TilePropertyState.Loading;
+				if (_properties.sourceType != ImagerySourceType.Custom)
 				{
-					tile.RasterDataState = TilePropertyState.Error;
-					Progress--;
-					return;
+					_properties.sourceOptions.layerSource = MapboxDefaultImagery.GetParameters(_properties.sourceType);
 				}
-
-				tile.SetRasterData(rasterTile.Data, _useMipMap, _useCompression);
-				tile.RasterDataState = TilePropertyState.Loaded;
-				Progress--;
-			});
+				ImageDataFetcherParameters parameters = new ImageDataFetcherParameters()
+				{
+					canonicalTileId = tile.CanonicalTileId,
+					tile = tile,
+					mapid = MapId,
+					useRetina = _properties.rasterOptions.useRetina
+				};
+				DataFetcher.FetchData(parameters);
+			}
 		}
 
-		internal override void OnUnregistered(UnityTile tile)
+		/// <summary>
+		/// Method to be called when a tile error has occurred.
+		/// </summary>
+		/// <param name="e"><see cref="T:Mapbox.Map.TileErrorEventArgs"/> instance/</param>
+		protected override void OnErrorOccurred(UnityTile tile, TileErrorEventArgs e)
+		{
+			base.OnErrorOccurred(tile, e);
+			if (tile != null)
+			{
+				tile.RasterDataState = TilePropertyState.Error;
+			}
+		}
+
+		protected override void OnUnregistered(UnityTile tile)
+		{
+			if (_tilesWaitingResponse != null && _tilesWaitingResponse.Contains(tile))
+			{
+				_tilesWaitingResponse.Remove(tile);
+			}
+		}
+
+		protected override void OnPostProcess(UnityTile tile)
 		{
 
 		}
+
+		public override void UnbindEvents()
+		{
+			base.UnbindEvents();
+		}
+
+		protected override void OnUnbindEvents()
+		{
+		}
+		#endregion
 	}
 }

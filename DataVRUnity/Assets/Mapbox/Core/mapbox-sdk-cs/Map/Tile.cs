@@ -11,6 +11,7 @@ namespace Mapbox.Map
 	using System.Linq;
 	using System.Collections.Generic;
 	using System.Collections.ObjectModel;
+	using Mapbox.Unity.Utilities;
 
 
 	/// <summary>
@@ -28,7 +29,6 @@ namespace Mapbox.Map
 		private IAsyncRequest _request;
 		private Action _callback;
 
-
 		/// <summary> Tile state. </summary>
 		public enum State
 		{
@@ -39,7 +39,9 @@ namespace Mapbox.Map
 			/// <summary> Data loaded and parsed. </summary>
 			Loaded,
 			/// <summary> Data loading cancelled. </summary>
-			Canceled
+			Canceled,
+			/// <summary> Data has been loaded before and got updated. </summary>
+			Updated
 		}
 
 		/// <summary> Gets the <see cref="T:Mapbox.Map.CanonicalTileId"/> identifier. </summary>
@@ -104,6 +106,10 @@ namespace Mapbox.Map
 			}
 		}
 
+
+		public HttpRequestType RequestType { get { return _request.RequestType; } }
+
+
 		public bool IsCompleted
 		{
 			get
@@ -111,7 +117,6 @@ namespace Mapbox.Map
 				return _state == State.Loaded;
 			}
 		}
-
 
 		/// <summary>
 		///     Initializes the <see cref="T:Mapbox.Map.Tile"/> object. It will
@@ -201,11 +206,17 @@ namespace Mapbox.Map
 		// a Worker class to abstract this, so on platforms that support threads (like Unity
 		// on the desktop, Android, etc) we can use worker threads and when building for
 		// the browser, we keep it single-threaded.
+		List<string> ids = new List<string>();
 		private void HandleTileResponse(Response response)
 		{
 
 			if (response.HasError)
 			{
+				if (!ids.Contains(_id.ToString()))
+					ids.Add(_id.ToString());
+				else
+					return;
+
 				response.Exceptions.ToList().ForEach(e => AddException(e));
 			}
 			else
@@ -221,7 +232,14 @@ namespace Mapbox.Map
 			// Cancelled is not the same as loaded!
 			if (_state != State.Canceled)
 			{
-				_state = State.Loaded;
+				if (response.IsUpdate)
+				{
+					_state = State.Updated;
+				}
+				else
+				{
+					_state = State.Loaded;
+				}
 			}
 			_callback();
 		}

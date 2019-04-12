@@ -16,7 +16,7 @@
 	{
 		private  GeoPosition markerScript;
 
-		public override void Run (FeatureBehaviour fb, UnityTile tile)
+		public override void Run (VectorEntity fb, UnityTile tile)
 		{
 			try {
 				// Get the static singleton instance.

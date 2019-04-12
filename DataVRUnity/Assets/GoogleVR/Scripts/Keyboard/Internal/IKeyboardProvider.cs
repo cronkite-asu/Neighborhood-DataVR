@@ -1,4 +1,6 @@
-﻿// Copyright 2017 Google Inc. All rights reserved.
+//-----------------------------------------------------------------------
+// <copyright file="IKeyboardProvider.cs" company="Google Inc.">
+// Copyright 2017 Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,38 +13,42 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using UnityEngine;
 
-namespace Gvr.Internal {
-  /// Internal interface that abstracts an implementation of a keyboard.
-  ///
-  /// Each platform has a different concrete implementation of a Keyboard Provider.
-  /// For example, if running on the Unity Editor, we use an implementation that
-  /// emulates the keyboard behaviour. If running on a real Android device,
-  /// we use an implementation that uses the underlying Daydream keyboard API.
-  interface IKeyboardProvider {
-    /// Notifies the controller provider that the application has paused.
-    void OnPause();
+namespace Gvr.Internal
+{
+    /// Internal interface that abstracts an implementation of a keyboard.
+    ///
+    /// Each platform has a different concrete implementation of a Keyboard Provider.
+    /// For example, if running on the Unity Editor, we use an implementation that
+    /// emulates the keyboard behaviour. If running on a real Android device,
+    /// we use an implementation that uses the underlying Daydream keyboard API.
+    interface IKeyboardProvider
+    {
+        /// Notifies the controller provider that the application has paused.
+        void OnPause();
 
-    /// Notifies the controller provider that the application has resumed.
-    void OnResume();
+        /// Notifies the controller provider that the application has resumed.
+        void OnResume();
 
-    /// Reads the controller's current state and stores it in outState.
-    void ReadState(KeyboardState outState);
+        /// Reads the controller's current state and stores it in outState.
+        void ReadState(KeyboardState outState);
 
-    bool Create(GvrKeyboard.KeyboardCallback keyboardEvent);
+        bool Create(GvrKeyboard.KeyboardCallback keyboardEvent);
 
-    void UpdateData();
+        void UpdateData();
 
-    void Render(int eye, Matrix4x4 modelview, Matrix4x4 projection, Rect viewport);
+        void Render(int eye, Matrix4x4 modelview, Matrix4x4 projection, Rect viewport);
 
-    void Hide();
+        void Hide();
 
-    void Show(Matrix4x4 controllerMatrix, bool useRecommended, float distance, Matrix4x4 model);
+        void Show(Matrix4x4 controllerMatrix, bool useRecommended, float distance, Matrix4x4 model);
 
-    void SetInputMode(GvrKeyboardInputMode mode);
+        void SetInputMode(GvrKeyboardInputMode mode);
 
-    string EditorText { get; set; }
-  }
+        string EditorText { get; set; }
+    }
 }

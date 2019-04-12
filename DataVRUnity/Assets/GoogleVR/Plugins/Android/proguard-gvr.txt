@@ -31,4 +31,5 @@
     @com.google.vr.cardboard.annotations.UsedByReflection *;
 }
 
--dontwarn com.google.protobuf.nano.NanoEnumValue
+-dontwarn sun.misc.Unsafe
+-dontwarn libcore.io.Memory

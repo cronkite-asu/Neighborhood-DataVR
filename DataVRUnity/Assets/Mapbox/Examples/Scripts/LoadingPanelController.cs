@@ -1,27 +1,56 @@
+
 namespace Mapbox.Examples
 {
 	using UnityEngine;
 	using Mapbox.Unity.Map;
+	using UnityEngine.UI;
 
 	public class LoadingPanelController : MonoBehaviour
 	{
-		public MapVisualizer MapVisualizer;
-		public GameObject Content;
+		[SerializeField]
+		GameObject _content;
 
+		[SerializeField]
+		Text _text;
+
+		[SerializeField]
+		AnimationCurve _curve;
+
+		AbstractMap _map;
 		void Awake()
 		{
-			MapVisualizer.OnMapVisualizerStateChanged += (s) =>
+			_map = FindObjectOfType<AbstractMap>();
+			_map.OnInitialized += _map_OnInitialized;
+		}
+
+		void _map_OnInitialized()
+		{
+			var visualizer = _map.MapVisualizer;
+			_text.text = "LOADING";
+			visualizer.OnMapVisualizerStateChanged += (s) =>
 			{
+
+				if (this == null)
+					return;
+
 				if (s == ModuleState.Finished)
 				{
-					Content.SetActive(false);
+					_content.SetActive(false);
 				}
 				else if (s == ModuleState.Working)
 				{
-					Content.SetActive(true);
-				}
 
+					// Uncommment me if you want the loading screen to show again
+					// when loading new tiles.
+					//_content.SetActive(true);
+				}
 			};
+		}
+
+		void Update()
+		{
+			var t = _curve.Evaluate(Time.time);
+			_text.color = Color.Lerp(Color.clear, Color.white, t);
 		}
 	}
 }

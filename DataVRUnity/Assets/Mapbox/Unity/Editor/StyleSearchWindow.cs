@@ -8,7 +8,6 @@
 	using Mapbox.Unity.Utilities;
 	using Mapbox.Unity.Map;
 	using System.Collections;
-	using Mapbox.Unity.MeshGeneration.Factories;
 
 	public class StyleSearchWindow : EditorWindow
 	{

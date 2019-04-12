@@ -1,4 +1,6 @@
-﻿// Copyright 2016 Google Inc. All rights reserved.
+//-----------------------------------------------------------------------
+// <copyright file="AppButtonInput.cs" company="Google Inc.">
+// Copyright 2016 Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,25 +13,32 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+// </copyright>
+//-----------------------------------------------------------------------
 
+namespace GoogleVR.VideoDemo
+{
+    using UnityEngine;
 
-namespace GoogleVR.VideoDemo {
-  using UnityEngine;
+    /// <summary>
+    /// Provides controller app button input through UnityEvents.
+    /// </summary>
+    public class AppButtonInput : MonoBehaviour
+    {
+        public ButtonEvent OnAppUp;
+        public ButtonEvent OnAppDown;
 
-  /// <summary>
-  /// Provides controller app button input through UnityEvents.
-  /// </summary>
-  public class AppButtonInput : MonoBehaviour {
-    public ButtonEvent OnAppUp;
-    public ButtonEvent OnAppDown;
+        void Update()
+        {
+            if (Gvr.Internal.ControllerUtils.AnyButtonUp(GvrControllerButton.App))
+            {
+                OnAppUp.Invoke();
+            }
 
-    void Update() {
-      if (GvrControllerInput.AppButtonUp)
-        OnAppUp.Invoke();
-
-      if (GvrControllerInput.AppButtonDown)
-        OnAppDown.Invoke();
+            if (Gvr.Internal.ControllerUtils.AnyButtonDown(GvrControllerButton.App))
+            {
+                OnAppDown.Invoke();
+            }
+        }
     }
-
-  }
 }

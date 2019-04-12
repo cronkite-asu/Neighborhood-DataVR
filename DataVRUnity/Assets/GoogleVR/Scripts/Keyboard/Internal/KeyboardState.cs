@@ -1,4 +1,6 @@
-﻿// Copyright 2017 Google Inc. All rights reserved.
+//-----------------------------------------------------------------------
+// <copyright file="KeyboardState.cs" company="Google Inc.">
+// Copyright 2017 Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,22 +13,25 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using UnityEngine;
 
-public class KeyboardState {
+public class KeyboardState
+{
+    internal string editorText = string.Empty;
+    internal GvrKeyboardInputMode mode = GvrKeyboardInputMode.DEFAULT;
+    internal bool isValid = false;
+    internal bool isReady = false;
+    internal Matrix4x4 worldMatrix;
 
-  internal string editorText = string.Empty;
-  internal GvrKeyboardInputMode mode = GvrKeyboardInputMode.DEFAULT;
-  internal bool isValid = false;
-  internal bool isReady = false;
-  internal Matrix4x4 worldMatrix;
-
-  public void CopyFrom(KeyboardState other) {
-    editorText = other.editorText;
-    mode = other.mode;
-    isValid = other.isValid;
-    isReady = other.isReady;
-    worldMatrix = other.worldMatrix;
-  }
+    public void CopyFrom(KeyboardState other)
+    {
+        editorText = other.editorText;
+        mode = other.mode;
+        isValid = other.isValid;
+        isReady = other.isReady;
+        worldMatrix = other.worldMatrix;
+    }
 }

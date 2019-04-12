@@ -126,7 +126,7 @@
 
 			try {
 				markerList = Configuration.getFilteredList ();
-
+				Debug.Log("Marker List==>"+markerList.ToString());
 				Map.OnInitialized += () => {
 					fetchGeoLocation (markerList);
 					plotAllMarkers ();

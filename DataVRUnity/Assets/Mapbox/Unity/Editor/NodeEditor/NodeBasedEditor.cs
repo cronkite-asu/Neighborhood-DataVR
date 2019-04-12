@@ -32,7 +32,18 @@ namespace Mapbox.Editor.NodeEditor
 		public static GUIStyle selectedNodeStyle;
 		public static GUIStyle inPointStyle;
 		public static GUIStyle outPointStyle;
-		public static Texture2D magnifierTexture;
+		private static Texture2D _magnifierTexture;
+		public static Texture2D magnifierTexture
+		{
+			get
+			{
+				if (_magnifierTexture == null)
+				{
+					_magnifierTexture = EditorGUIUtility.FindTexture("d_ViewToolZoom");
+				}
+				return _magnifierTexture;
+			}
+		}
 		private GUIStyle _optionLabel;
 
 		//private ConnectionPoint selectedInPoint;
@@ -57,7 +68,7 @@ namespace Mapbox.Editor.NodeEditor
 		private void OnEnable()
 		{
 			GUIScaleUtility.CheckInit();
-			magnifierTexture = EditorGUIUtility.FindTexture("d_ViewToolZoom");
+			//MagnifierTexture = EditorGUIUtility.FindTexture("d_ViewToolZoom");
 			var textOffset = new RectOffset(12, 0, 10, 0);
 
 			nodeStyle = new GUIStyle();
@@ -67,7 +78,7 @@ namespace Mapbox.Editor.NodeEditor
 			nodeStyle.padding = textOffset;
 
 			selectedNodeStyle = new GUIStyle();
-			selectedNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node5 on.png") as Texture2D;
+			selectedNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
 			selectedNodeStyle.border = new RectOffset(12, 12, 12, 12);
 			selectedNodeStyle.richText = true;
 			selectedNodeStyle.padding = textOffset;
@@ -99,14 +110,34 @@ namespace Mapbox.Editor.NodeEditor
 				_maps.Clear();
 
 			var abstractMaps = FindObjectsOfType<AbstractMap>();
+
+			//foreach (var abstractMap in abstractMaps)
+			//{
+			//	foreach (FieldInfo fi in abstractMap.GetType().GetFields().Where(x => x.IsDefined(typeof(NodeEditorElementAttribute), true)))
+			//	{
+			//		var val = fi.GetValue(abstractMap) as ScriptableObject;
+			//		if (typeof(ScriptableObject).IsAssignableFrom(fi.FieldType) && val != null)
+			//		{
+			//			var map = abstractMap.MapVisualizer;
+			//			var mapNode = new Node(map as ScriptableObject);
+			//			mapNode.title = map.name;
+			//			mapNode.subtitle = "Map Visualizer";
+			//			_maps.Add(mapNode);
+			//			mapNode.Dive(map, showModifiers);
+			//		}
+			//	}
+			//}
+
 			foreach (var abstractMap in abstractMaps)
 			{
-				if (abstractMap.MapVisualizer != null)
+				if (abstractMap != null)
 				{
-					var map = abstractMap.MapVisualizer;
-					var mapNode = new Node(map as ScriptableObject);
-					mapNode.title = map.name;
-					mapNode.subtitle = "Map Visualizer";
+					var map = abstractMap;
+					var mapNode = new Node(map);
+					//{
+					//	title = "Map",
+					//	subtitle = "Map Visualizer"
+					//};
 					_maps.Add(mapNode);
 					mapNode.Dive(map, showModifiers);
 				}
@@ -199,7 +230,7 @@ namespace Mapbox.Editor.NodeEditor
 
 		void OnFocus()
 		{
-			//Parse();
+			Parse();
 		}
 
 		private void DrawGrid(float gridSpacing, float gridOpacity, Color gridColor)

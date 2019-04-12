@@ -1,4 +1,6 @@
-﻿// Copyright 2017 Google Inc. All rights reserved.
+//-----------------------------------------------------------------------
+// <copyright file="GvrExecuteEventsExtension.cs" company="Google Inc.">
+// Copyright 2017 Google Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,20 +13,26 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+// </copyright>
+//-----------------------------------------------------------------------
 
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.Collections;
 
 /// This script extends the standard Unity EventSystem events with Gvr specific events.
-public static class GvrExecuteEventsExtension {
-  private static readonly ExecuteEvents.EventFunction<IGvrPointerHoverHandler> s_HoverHandler = Execute;
+public static class GvrExecuteEventsExtension
+{
+    private static readonly ExecuteEvents.EventFunction<IGvrPointerHoverHandler> s_HoverHandler = Execute;
 
-  private static void Execute(IGvrPointerHoverHandler handler, BaseEventData eventData) {
-    handler.OnGvrPointerHover(ExecuteEvents.ValidateEventData<PointerEventData>(eventData));
-  }
+    private static void Execute(IGvrPointerHoverHandler handler, BaseEventData eventData)
+    {
+        handler.OnGvrPointerHover(ExecuteEvents.ValidateEventData<PointerEventData>(eventData));
+    }
 
-  public static ExecuteEvents.EventFunction<IGvrPointerHoverHandler> pointerHoverHandler {
-    get { return s_HoverHandler; }
-  }
+    /// <summary>Handler for hover events.</summary>
+    public static ExecuteEvents.EventFunction<IGvrPointerHoverHandler> pointerHoverHandler
+    {
+        get { return s_HoverHandler; }
+    }
 }

@@ -9,6 +9,7 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 	using Modifiers;
 	using Mapbox.Utils;
 	using Mapbox.Unity.Utilities;
+	using System.Collections;
 
 	public class DirectionsFactory : MonoBehaviour
 	{
@@ -17,29 +18,61 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 
 		[SerializeField]
 		MeshModifier[] MeshModifiers;
-
-		[SerializeField]
-		Transform[] _waypoints;
-
 		[SerializeField]
 		Material _material;
 
-		Directions _directions;
+		[SerializeField]
+		Transform[] _waypoints;
+		private List<Vector3> _cachedWaypoints;
 
-		void Awake()
+		[SerializeField]
+		[Range(1,10)]
+		private float UpdateFrequency = 2;
+
+		
+
+		private Directions _directions;
+		private int _counter;
+
+		GameObject _directionsGO;
+		private bool _recalculateNext; 
+
+		protected virtual void Awake()
 		{
+			if (_map == null)
+			{
+				_map = FindObjectOfType<AbstractMap>();
+			}
 			_directions = MapboxAccess.Instance.Directions;
 			_map.OnInitialized += Query;
+			_map.OnUpdated += Query;
 		}
 
-		void OnDestroy()
+		public void Start()
+		{
+			_cachedWaypoints = new List<Vector3>(_waypoints.Length);
+			foreach (var item in _waypoints)
+			{
+				_cachedWaypoints.Add(item.position);
+			}
+			_recalculateNext = false;
+
+			foreach (var modifier in MeshModifiers)
+			{
+				modifier.Initialize();
+			}
+
+			StartCoroutine(QueryTimer());
+		}
+
+		protected virtual void OnDestroy()
 		{
 			_map.OnInitialized -= Query;
+			_map.OnUpdated -= Query;
 		}
 
 		void Query()
 		{
-			_map.OnInitialized -= Query;
 			var count = _waypoints.Length;
 			var wp = new Vector2d[count];
 			for (int i = 0; i < count; i++)
@@ -51,9 +84,31 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 			_directions.Query(_directionResource, HandleDirectionsResponse);
 		}
 
+		public IEnumerator QueryTimer()
+		{
+			while (true)
+			{
+				yield return new WaitForSeconds(UpdateFrequency);
+				for (int i = 0; i < _waypoints.Length; i++)
+				{
+					if (_waypoints[i].position != _cachedWaypoints[i])
+					{
+						_recalculateNext = true;
+						_cachedWaypoints[i] = _waypoints[i].position;
+					}
+				}
+
+				if (_recalculateNext)
+				{
+					Query();
+					_recalculateNext = false;
+				}
+			}
+		}
+
 		void HandleDirectionsResponse(DirectionsResponse response)
 		{
-			if (null == response.Routes || response.Routes.Count < 1)
+			if (response == null || null == response.Routes || response.Routes.Count < 1)
 			{
 				return;
 			}
@@ -78,26 +133,32 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 
 		GameObject CreateGameObject(MeshData data)
 		{
-			var go = new GameObject("direction waypoint " + " entity");
-			var mesh = go.AddComponent<MeshFilter>().mesh;
+			if (_directionsGO != null)
+			{
+				Destroy(_directionsGO);
+			}
+			_directionsGO = new GameObject("direction waypoint " + " entity");
+			var mesh = _directionsGO.AddComponent<MeshFilter>().mesh;
 			mesh.subMeshCount = data.Triangles.Count;
 
 			mesh.SetVertices(data.Vertices);
-			for (int i = 0; i < data.Triangles.Count; i++)
+			_counter = data.Triangles.Count;
+			for (int i = 0; i < _counter; i++)
 			{
 				var triangle = data.Triangles[i];
 				mesh.SetTriangles(triangle, i);
 			}
 
-			for (int i = 0; i < data.UV.Count; i++)
+			_counter = data.UV.Count;
+			for (int i = 0; i < _counter; i++)
 			{
 				var uv = data.UV[i];
 				mesh.SetUVs(i, uv);
 			}
 
 			mesh.RecalculateNormals();
-			go.AddComponent<MeshRenderer>().material = _material;
-			return go;
+			_directionsGO.AddComponent<MeshRenderer>().material = _material;
+			return _directionsGO;
 		}
 	}
 
