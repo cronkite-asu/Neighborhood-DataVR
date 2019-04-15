@@ -33,9 +33,10 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+DataVRUnity/Assets/Data
 /DataVRUnity/Assets/GoogleVR.meta
 /DataVRUnity/Assets/Materials/arrow 1.mat.meta
 /DataVRUnity/Assets/AssetStoreTools*
-
+/DataVRUnity/Builds
 /DataVRUnity/obj
 /DataVRUnity/Library
