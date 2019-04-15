@@ -1762,7 +1762,7 @@ MonoBehaviour:
     type: 3}
   filterCanvas: {fileID: 224688932}
   gazeTime: 5
-  googleMapsApiKey: AIzaSyAvyZIbENj5mP3ubkrhNjz5ilZOen0INTM
+  googleMapsApiKey: 
   markerHeight: 15
 --- !u!4 &1398659223
 Transform:
