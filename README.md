@@ -47,7 +47,9 @@ Geolocation data (preferably in .csv file) should be provided in the Data Field 
 Drag and drop the file in the `Data File` field of the `Configuration` GameObject's inspector.
 
 Next load MapScene from `Assets->Scenes->MapScene` and configure the initial location of data in the Map GameObject.
-![Screenshot](Images/MapSceneConfig "MapScene Configuration")
+
+
+
 
 #### For changing markers displayed:
 
@@ -67,7 +69,7 @@ Next load MapScene from `Assets->Scenes->MapScene` and configure the initial loc
 2. After selecting Filters click on “Buildings” Map Feature.
 3. Select Texturing and set the preferred building texture.
 
-   ![Screenshot](Images/MapTexturingConfig "MapTexturing Configuration")
+
 
 `
 
