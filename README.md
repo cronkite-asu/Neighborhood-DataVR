@@ -9,8 +9,8 @@ Take a look at this video below for a quick demo.
 
 ## Components Involved:
 
-- MapBox Unity SDK 1.2.0
-- GoogleVR sdk 1.70.0
+- MapBox Unity SDK V2.0.0
+- GoogleVR SDK 1.190.0
 
 
 ## API configuration:
@@ -47,7 +47,7 @@ Geolocation data (preferably in .csv file) should be provided in the Data Field 
 Drag and drop the file in the `Data File` field of the `Configuration` GameObject's inspector.
 
 Next load MapScene from `Assets->Scenes->MapScene` and configure the initial location of data in the Map GameObject.
-![Screenshot](Images/MapSceneConfig.png "MapScene Configuration")
+![Screenshot](Images/MapSceneConfig "MapScene Configuration")
 
 #### For changing markers displayed:
 
@@ -59,4 +59,15 @@ Next load MapScene from `Assets->Scenes->MapScene` and configure the initial loc
 
 
 `Important: So it is advisable to never leave default marker field empty
+
+
+#### For applying different Textures on the Map:
+
+1. Go to MapScene->Map->Filters.
+2. After selecting Filters click on “Buildings” Map Feature.
+3. Select Texturing and set the preferred building texture.
+
+   ![Screenshot](Images/MapTexturingConfig "MapTexturing Configuration")
+
 `
+
