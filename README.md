@@ -64,10 +64,10 @@ Next load MapScene from `Assets->Scenes->MapScene` and configure the initial loc
 `Important: So it is advisable to never leave default marker field empty
 
 
-#### For applying different Textures on the Map:
+#### For applying different Textures to Buildings:
 
-1. Go to MapScene->Map->Filters.
-2. After selecting Filters click on “Buildings” Map Feature.
+1. Go to MapScene->Map->Features.
+2. Click “Buildings” Map Features.
 3. Select Texturing and set the preferred building texture.
 ![Screenshot](Images/MapTexturingConfig.png "Filter Scene Configuration")
 
