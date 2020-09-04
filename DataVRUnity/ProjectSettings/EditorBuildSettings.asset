@@ -11,3 +11,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MapScene.unity
     guid: 8301052c2ff224abe8a3435e8ea75cbb
+  m_configObjects:
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 38377ee14c9254369a6627e16d7d0630,
+      type: 2}

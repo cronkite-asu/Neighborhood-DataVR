@@ -5,8 +5,7 @@
 	using UnityEditor;
 	using Mapbox.Unity.Map;
 
-	[CustomPropertyDrawer(typeof(VectorLayerProperties))]
-	public class VectorLayerPropertiesDrawer : PropertyDrawer
+	public class VectorLayerPropertiesDrawer
 	{
 		private string objectId = "";
 		/// <summary>
@@ -41,9 +40,9 @@
 			}
 		}
 
-		private GUIContent _requiredMapIdGui = new GUIContent
+		private GUIContent _requiredTilesetIdGui = new GUIContent
 		{
-			text = "Required Map Id",
+			text = "Required Tileset Id",
 			tooltip = "For location prefabs to spawn the \"streets-v7\" tileset needs to be a part of the Vector data source"
 		};
 
@@ -56,19 +55,21 @@
 			EditorGUILayout.Space();
 		}
 
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+		public void DrawUI(SerializedProperty property)
 		{
-			EditorGUI.BeginProperty(position, null, property);
 			objectId = property.serializedObject.targetObject.GetInstanceID().ToString();
 			var layerSourceProperty = property.FindPropertyRelative("sourceOptions");
 			var sourceTypeProperty = property.FindPropertyRelative("_sourceType");
-			VectorSourceType sourceTypeValue = (VectorSourceType)sourceTypeProperty.enumValueIndex;
+
+			var names = sourceTypeProperty.enumNames;
+			VectorSourceType sourceTypeValue = ((VectorSourceType) Enum.Parse(typeof(VectorSourceType), names[sourceTypeProperty.enumValueIndex]));
+			//VectorSourceType sourceTypeValue = (VectorSourceType)sourceTypeProperty.enumValueIndex;
 			string streets_v7 = MapboxDefaultVector.GetParameters(VectorSourceType.MapboxStreets).Id;
 			var layerSourceId = layerSourceProperty.FindPropertyRelative("layerSource.Id");
 			string layerString = layerSourceId.stringValue;
 
 			//Draw POI Section
-			if(sourceTypeValue == VectorSourceType.None)
+			if (sourceTypeValue == VectorSourceType.None)
 			{
 				return;
 			}
@@ -79,7 +80,7 @@
 				if (sourceTypeValue != VectorSourceType.None && layerString.Contains(streets_v7))
 				{
 					GUI.enabled = false;
-					EditorGUILayout.TextField(_requiredMapIdGui, streets_v7);
+					EditorGUILayout.TextField(_requiredTilesetIdGui, streets_v7);
 					GUI.enabled = true;
 					_poiSublayerDrawer.DrawUI(property);
 				}
@@ -91,14 +92,47 @@
 
 			ShowSepartor();
 
-			//Draw Feature section. 
+			//Draw Feature section.
 			ShowFeatures = EditorGUILayout.Foldout(ShowFeatures, "FEATURES");
 			if (ShowFeatures)
 			{
 				_vectorSublayerDrawer.DrawUI(property);
 			}
-
-			EditorGUI.EndProperty();
 		}
+
+		public void PostProcessLayerProperties(SerializedProperty property)
+		{
+
+			var layerSourceProperty = property.FindPropertyRelative("sourceOptions");
+			var sourceTypeProperty = property.FindPropertyRelative("_sourceType");
+			VectorSourceType sourceTypeValue = (VectorSourceType)sourceTypeProperty.enumValueIndex;
+			string streets_v7 = MapboxDefaultVector.GetParameters(VectorSourceType.MapboxStreets).Id;
+			var layerSourceId = layerSourceProperty.FindPropertyRelative("layerSource.Id");
+			string layerString = layerSourceId.stringValue;
+
+			if (ShowLocationPrefabs)
+			{
+				if (_poiSublayerDrawer.isLayerAdded == true && sourceTypeValue != VectorSourceType.None && layerString.Contains(streets_v7))
+				{
+					var prefabItemArray = property.FindPropertyRelative("locationPrefabList");
+					var prefabItem = prefabItemArray.GetArrayElementAtIndex(prefabItemArray.arraySize - 1);
+					PrefabItemOptions prefabItemOptionToAdd = (PrefabItemOptions)EditorHelper.GetTargetObjectOfProperty(prefabItem) as PrefabItemOptions;
+					((VectorLayerProperties)EditorHelper.GetTargetObjectOfProperty(property)).OnSubLayerPropertyAdded(new VectorLayerUpdateArgs { property = prefabItemOptionToAdd });
+					_poiSublayerDrawer.isLayerAdded = false;
+				}
+			}
+			if (ShowFeatures)
+			{
+				if (_vectorSublayerDrawer.isLayerAdded == true)
+				{
+					var subLayerArray = property.FindPropertyRelative("vectorSubLayers");
+					var subLayer = subLayerArray.GetArrayElementAtIndex(subLayerArray.arraySize - 1);
+					((VectorLayerProperties)EditorHelper.GetTargetObjectOfProperty(property)).OnSubLayerPropertyAdded(new VectorLayerUpdateArgs { property = EditorHelper.GetTargetObjectOfProperty(subLayer) as MapboxDataProperty });
+					_vectorSublayerDrawer.isLayerAdded = false;
+				}
+			}
+
+		}
+
 	}
 }

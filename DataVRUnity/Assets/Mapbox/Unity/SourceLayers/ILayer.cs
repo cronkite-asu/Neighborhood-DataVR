@@ -1,4 +1,5 @@
 using System.Linq;
+using Mapbox.Unity.MeshGeneration.Data;
 using Mapbox.Unity.SourceLayers;
 
 namespace Mapbox.Unity.Map
@@ -32,7 +33,6 @@ namespace Mapbox.Unity.Map
 		void Initialize(LayerProperties properties);
 		void Update(LayerProperties properties);
 		void Remove();
-
 	}
 
 	public interface IVectorDataLayer : ILayer
@@ -47,11 +47,11 @@ namespace Mapbox.Unity.Map
 		void SetLayerSource(VectorSourceType vectorSource);
 
 		/// <summary>
-		/// Adds the provided `Data Source` (`Map ID`) to existing ones. For multiple
-		/// sources, you can separate with a comma. `Map ID` string is added at the
+		/// Adds the provided `Data Source` (`Tileset ID`) to existing ones. For multiple
+		/// sources, you can separate with a comma. `Tileset ID` string is added at the
 		/// end of the existing sources.
 		/// </summary>
-		/// <param name="vectorSource">`Data Source` (`Map ID`) to add to existing sources.</param>
+		/// <param name="vectorSource">`Data Source` (`Tileset ID`) to add to existing sources.</param>
 		void AddLayerSource(string vectorSource);
 
 		/// <summary>

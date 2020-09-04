@@ -7,6 +7,7 @@
 	using Mapbox.Unity.Utilities;
 	using UnityEngine;
 	using System.Text;
+	using UnityEngine.Networking;
 
 	public class TelemetryWebgl : ITelemetryLibrary
 	{
@@ -48,6 +49,9 @@
 			jsonDict.Add("created", unixTimestamp);
 			jsonDict.Add("userId", SystemInfo.deviceUniqueIdentifier);
 			jsonDict.Add("enabled.telemetry", false);
+			jsonDict.Add("sdkIdentifier", GetSDKIdentifier());
+			jsonDict.Add("skuId", Constants.SDK_SKU_ID);
+			jsonDict.Add("sdkVersion", Constants.SDK_VERSION);
 
 			// user-agent cannot be set from web broswer, so we send in payload, instead!
 			jsonDict.Add("userAgent", GetUserAgent());
@@ -73,11 +77,21 @@
 		IEnumerator PostWWW(string url, string bodyJsonString)
 		{
 			byte[] bodyRaw = Encoding.UTF8.GetBytes(bodyJsonString);
+#if UNITY_2017_1_OR_NEWER
+			UnityWebRequest postRequest = new UnityWebRequest(url, "POST");
+			postRequest.SetRequestHeader("Content-Type", "application/json");
+
+			postRequest.downloadHandler = new DownloadHandlerBuffer();
+			postRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
+
+			yield return postRequest.SendWebRequest();
+#else
 			var headers = new Dictionary<string, string>();
 			headers.Add("Content-Type", "application/json");
-
+			headers.Add("user-agent", GetUserAgent());
 			var www = new WWW(url, bodyRaw, headers);
 			yield return www;
+#endif
 		}
 
 		static string GetUserAgent()
@@ -90,6 +104,14 @@
 										  Constants.SDK_VERSION
 										 );
 			return userAgent;
+		}
+
+		private string GetSDKIdentifier()
+		{
+			var sdkIdentifier = string.Format("MapboxEventsUnity{0}",
+										  Application.platform
+										 );
+			return sdkIdentifier;
 		}
 
 		public void SetLocationCollectionState(bool enable)

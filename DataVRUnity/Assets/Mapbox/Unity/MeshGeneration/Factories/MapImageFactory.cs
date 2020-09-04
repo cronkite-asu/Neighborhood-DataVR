@@ -34,7 +34,7 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 			}
 		}
 
-		public string MapId
+		public string TilesetId
 		{
 			get
 			{
@@ -64,9 +64,10 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 		{
 			if (tile != null)
 			{
+				_tilesWaitingResponse.Remove(tile);
+
 				if (tile.RasterDataState != TilePropertyState.Unregistered)
 				{
-					_tilesWaitingResponse.Remove(tile);
 					tile.SetRasterData(rasterTile.Data, _properties.rasterOptions.useMipMap, _properties.rasterOptions.useCompression);
 				}
 			}
@@ -120,7 +121,7 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 				{
 					canonicalTileId = tile.CanonicalTileId,
 					tile = tile,
-					mapid = MapId,
+					tilesetId = TilesetId,
 					useRetina = _properties.rasterOptions.useRetina
 				};
 				DataFetcher.FetchData(parameters);
@@ -146,6 +147,11 @@ namespace Mapbox.Unity.MeshGeneration.Factories
 			{
 				_tilesWaitingResponse.Remove(tile);
 			}
+		}
+
+		public override void Clear()
+		{
+			DestroyImmediate(DataFetcher);
 		}
 
 		protected override void OnPostProcess(UnityTile tile)

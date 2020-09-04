@@ -1,1 +1,1 @@
-{"AccessToken":"","MemoryCacheSize":500,"FileCacheSize":2500,"DefaultTimeout":10,"AutoRefreshCache":false}
+{"AccessToken":"add your token here","MemoryCacheSize":500,"FileCacheSize":3000,"DefaultTimeout":30,"AutoRefreshCache":false}

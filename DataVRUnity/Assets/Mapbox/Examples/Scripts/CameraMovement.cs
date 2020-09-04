@@ -99,7 +99,7 @@ namespace Mapbox.Examples
 				var x = Input.GetAxis("Horizontal");
 				var z = Input.GetAxis("Vertical");
 				var y = Input.GetAxis("Mouse ScrollWheel") * _zoomSpeed;
-				if (!(Mathf.Approximately(x, 0) || Mathf.Approximately(y, 0) || Mathf.Approximately(z, 0)))
+				if (!(Mathf.Approximately(x, 0) && Mathf.Approximately(y, 0) && Mathf.Approximately(z, 0)))
 				{
 					transform.localPosition += transform.forward * y + (_originalRotation * new Vector3(x * _panSpeed, 0, z * _panSpeed));
 					_map.UpdateMap();
@@ -119,6 +119,15 @@ namespace Mapbox.Examples
 				if (_referenceCamera == null)
 				{
 					throw new System.Exception("You must have a reference camera assigned!");
+				}
+			}
+
+			if (_map == null)
+			{
+				_map = FindObjectOfType<AbstractMap>();
+				if (_map == null)
+				{
+					throw new System.Exception("You must have a reference map assigned!");
 				}
 			}
 		}
