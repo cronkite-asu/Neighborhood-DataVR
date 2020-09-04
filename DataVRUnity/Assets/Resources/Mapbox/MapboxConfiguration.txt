@@ -1,1 +1,1 @@
-{"AccessToken":"add your token here","MemoryCacheSize":500,"FileCacheSize":3000,"DefaultTimeout":30,"AutoRefreshCache":false}
+{"AccessToken":"Add you mapbox key in here","MemoryCacheSize":500,"FileCacheSize":3000,"DefaultTimeout":30,"AutoRefreshCache":false}

@@ -21,7 +21,9 @@ This unity asset required API keys from Mapbox for rendering map and Google's ge
 
 Mapbox - https://www.mapbox.com/install/unity/
 
-Google GeoLocation API Key -  https://developers.google.com/maps/documentation/geolocation
+Google GeoLocation API Key -  https://developers.google.com/maps/documentation/geolocation (enable Geocoding API)
+
+Note: To make the API Key working, you need to add your credit card details, and enable the biling account (this won't charge you. Read the guidelines on the number of requests etc provided by google)
 
 ## Getting Started:
 Once the API keys are obtained, they can be configured in the asset.
