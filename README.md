@@ -1,4 +1,5 @@
 # Neighborhood DataVR
+
 Unity asset for visualizing geo spatial data in Virtual Reality.
 
 This tool brings localized, neighborhood data visualization into Unity. Content creators can easily create a 3D visualization of neighborhood-based data, such as local schoolsâ€™ test scores or teacher-student ratios, in a mapped scene.
@@ -7,25 +8,25 @@ Take a look at this video below for a quick demo.
 
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/WcU7pMOTTTU/hqdefault.jpg)](https://www.youtube.com/watch?v=WcU7pMOTTTU)
 
-## Components Involved:
+## Components Involved
 
 - MapBox Unity SDK V2.0.0
 - GoogleVR SDK 1.190.0
 
-
-## API configuration:
+## API configuration
 
 This unity asset required API keys from Mapbox for rendering map and Google's geolocation API for geocoding address to latitude and longitude.
 
-##### API Key can be obtained from here
+### API Key can be obtained from here
 
-Mapbox - https://www.mapbox.com/install/unity/
+Mapbox - <https://www.mapbox.com/install/unity/>
 
-Google GeoLocation API Key -  https://developers.google.com/maps/documentation/geolocation (enable Geocoding API)
+Google GeoLocation API Key -  <https://developers.google.com/maps/documentation/geolocation> (enable Geocoding API)
 
-Note: To make the API Key working, you need to add your credit card details, and enable the biling account (this won't charge you. Read the guidelines on the number of requests etc provided by google)
+**Note:** In order to get the API Key to work, you will need to add your credit card details, and enable the biling account (You will not be charged, however Google requires you have a credit card on file. Read the guidelines on the number of requests etc provided by Google)
 
-## Getting Started:
+## Getting Started
+
 Once the API keys are obtained, they can be configured in the asset.
 
 Open FilterScene from `Assets->Scenes->FilterScene`
@@ -33,7 +34,7 @@ Open FilterScene from `Assets->Scenes->FilterScene`
 Click on the GameObject named `Configuration` and in the Inspector panel under Scripts sections, you will find the text box named `Google Maps Api Key` and provide the Google Geo Location API Key here.
 ![Screenshot](Images/FilterSceneConfig.png "Filter Scene Configuration")
 
-#### Configuration parameters
+### Configuration parameters
 
 `Default Marker` - Field where the default marker's icon object should be placed.
 
@@ -51,30 +52,20 @@ Drag and drop the file in the `Data File` field of the `Configuration` GameObjec
 Next load MapScene from `Assets->Scenes->MapScene` and configure the initial location of data in the Map GameObject.
 ![Screenshot](Images/MapSceneConfig.png "Filter Scene Configuration")
 
-
-
-
-#### For changing markers displayed:
+#### For changing markers displayed
 
 1. For changing the default marker, provide the suitable prefab in the Default Marker field of the Configuration game object.
 
-3. For customizing different game objects for different types of markers
+2. For customizing different game objects for different types of markers:
+
 - First, provide the number of the different objects in the 'Size' field of the Configuration game object.
-- Second, provide the name of the type and its corresponding prefab object that should be generated for this particular game object. If a particular type of marker is not defined here, then it will take the default game object. 
+- Second, provide the name of the type and its corresponding prefab object that should be generated for this particular game object. If a particular type of marker is not defined here, then it will take the default game object.
 
+**Important:** So it is advisable to never leave default marker field empty
 
-`Important: So it is advisable to never leave default marker field empty
-
-
-#### For applying different Textures to Buildings:
+#### For applying different Textures to Buildings
 
 1. Go to MapScene->Map->Features.
-2. Click ÒBuildingsÓ Map Features.
+2. Click ï¿½Buildingsï¿½ Map Features.
 3. Select Texturing and set the preferred building texture.
 ![Screenshot](Images/MapTexturingConfig.png "Filter Scene Configuration")
-
-
-
-
-`
-
